@@ -1,6 +1,8 @@
 package uk.co.activelylazy.devpractice;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +15,14 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 public class DevPracticeServer {
 
 	private Server server;
+	private List<DevPracticeTest> tests = new ArrayList<DevPracticeTest>();
 
 	public DevPracticeServer() {
+		tests.add(new SayHelloWorldTest());
 		server = new Server(8989);
 		server.setHandler(new AbstractHandler() {
+			
+			private List<DevPracticeClient> clients = new ArrayList<DevPracticeClient>();
 			
 			@Override
 			public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -26,8 +32,17 @@ public class DevPracticeServer {
 					String endpoint = request.getParameter("endpoint");
 					
 					DevPracticeClient client = new DevPracticeClient(endpoint);
+					clients.add(client);
 					client.sendStatus("registered");
 
+					sendResponse(baseRequest, response, "OK");
+				} else if (target.equals("/forceTest")) {
+					int client = Integer.parseInt(request.getParameter("client"));
+					int iteration = Integer.parseInt(request.getParameter("iteration"));
+					
+					DevPracticeClient theClient = clients.get(client);
+					tests.get(iteration).executeFor(theClient);
+					
 					sendResponse(baseRequest, response, "OK");
 				}
 			}

@@ -25,7 +25,7 @@ public class DevPracticeClient {
 		makeRequest("Status?message="+status);
 	}
 	
-	private String makeRequest(String requestURI) throws IOException, ClientProtocolException {
+	public String makeRequest(String requestURI) throws IOException, ClientProtocolException {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(endpoint + requestURI);
 		HttpResponse response = client.execute(get);
