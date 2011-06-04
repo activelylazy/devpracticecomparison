@@ -21,6 +21,7 @@ public class DevPracticeServer {
 
 	public DevPracticeServer() {
 		tests.add(new SayHelloWorldTest());
+		tests.add(new EchoContentBackTest());
 		server = new Server(8989);
 		server.setHandler(new AbstractHandler() {
 			

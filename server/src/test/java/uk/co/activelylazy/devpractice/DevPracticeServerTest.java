@@ -63,6 +63,18 @@ public class DevPracticeServerTest {
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
+	@Test public void
+	echo_contents_back_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
+		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		
+		client.setNextResponse("Echo this text back\n");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		assertThat(client.getStatus(), is("pass"));
+		
+		client.setNextResponse("Something else");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		assertThat(client.getStatus(), is("fail"));
+	}
 	
 	private String makeRequest(String url) throws IOException, ClientProtocolException {
 		HttpClient client = new DefaultHttpClient();

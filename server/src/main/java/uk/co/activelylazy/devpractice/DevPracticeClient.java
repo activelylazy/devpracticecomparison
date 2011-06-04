@@ -7,6 +7,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -33,4 +35,13 @@ public class DevPracticeClient {
 		return EntityUtils.toString(entity);
 	}
 	
+	public String makePOSTRequest(String requestURI, String body) throws IOException, ClientProtocolException {
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost(endpoint + requestURI);
+		HttpEntity requestEntity = new StringEntity(body, "text/plain", "UTF-8");
+		post.setEntity(requestEntity);
+		HttpResponse response = client.execute(post);
+		HttpEntity entity = response.getEntity();
+		return EntityUtils.toString(entity);
+	}
 }
