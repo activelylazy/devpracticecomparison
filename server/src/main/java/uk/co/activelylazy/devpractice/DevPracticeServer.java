@@ -16,12 +16,20 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 public class DevPracticeServer {
 
 	private Server server;
-	private List<DevPracticeTest> tests = new ArrayList<DevPracticeTest>();
+	private List<DevPracticeTask> tasks = new ArrayList<DevPracticeTask>();
 	int magicNumber = new Random().nextInt();
+	
+	private String[] texts = new String[] {
+		"",
+		"word.",
+		"A false conclusion: I hate it as an unfilled can. To be up after midnight and to go to bed then, is early: so that to go to bed after midnight is to go to bed betimes. Does not our life consist of the four elements?"
+	};
 
 	public DevPracticeServer() {
-		tests.add(new SayHelloWorldTest());
-		tests.add(new EchoContentBackTest());
+		tasks.add(new SayHelloWorldTask());
+		tasks.add(new EchoContentBackTask());
+		tasks.add(new CountWordsTask());
+		
 		server = new Server(8989);
 		server.setHandler(new AbstractHandler() {
 			
@@ -42,9 +50,13 @@ public class DevPracticeServer {
 				} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {
 					int client = Integer.parseInt(request.getParameter("client"));
 					int iteration = Integer.parseInt(request.getParameter("iteration"));
+					int text = 0;
+					if (request.getParameter("text") != null) {
+						text = Integer.parseInt(request.getParameter("text"));
+					}
 					
 					DevPracticeClient theClient = clients.get(client);
-					tests.get(iteration).executeFor(theClient);
+					tasks.get(iteration).executeFor(theClient,texts[text]);
 					
 					sendResponse(baseRequest, response, "OK");
 				}

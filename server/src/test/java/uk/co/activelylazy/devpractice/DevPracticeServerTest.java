@@ -80,6 +80,31 @@ public class DevPracticeServerTest {
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
+	@Test public void
+	count_words_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
+		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		
+		client.setNextResponse("0\n");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=0&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/CountWords"));
+		assertThat(client.getStatus(), is("pass"));
+		
+		client.setNextResponse("1\n");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=1&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/CountWords"));
+		assertThat(client.getStatus(), is("pass"));
+
+		client.setNextResponse("46\n");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=2&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/CountWords"));
+		assertThat(client.getStatus(), is("pass"));
+		
+		client.setNextResponse("10\n");
+		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=2&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/CountWords"));
+		assertThat(client.getStatus(), is("fail - expected 46; you sent 10"));
+	}
+	
 	private String makeRequest(String url) throws IOException, ClientProtocolException {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(url);

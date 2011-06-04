@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 
-public class SayHelloWorldTest implements DevPracticeTest {
+public class SayHelloWorldTask implements DevPracticeTask {
 
 	@Override
-	public void executeFor(DevPracticeClient client) throws ClientProtocolException, IOException {
+	public void executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException {
 		String response = client.makeRequest("/SayHelloWorld");
 		if (response.trim().equalsIgnoreCase("Hello world")) {
 			client.sendStatus("pass");

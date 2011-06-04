@@ -1,6 +1,7 @@
 package uk.co.activelylazy.devpractice;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,7 +25,7 @@ public class DevPracticeClient {
 	}
 	
 	public void sendStatus(String status) throws ClientProtocolException, IOException {
-		makeRequest("Status?message="+status);
+		makeRequest("Status?message="+URLEncoder.encode(status, "UTF-8"));
 	}
 	
 	public String makeRequest(String requestURI) throws IOException, ClientProtocolException {
