@@ -25,6 +25,16 @@ public class DevPracticeServer {
 			        response.setStatus(HttpServletResponse.SC_OK);
 			        baseRequest.setHandled(true);
 			        response.getWriter().println("Server OK");
+				} else if (target.equals("/register")) {
+					String endpoint = request.getParameter("endpoint");
+					
+					DevPracticeClient client = new DevPracticeClient(endpoint);
+					client.sendStatus("registered");
+					
+					response.setContentType("text/plain");
+			        response.setStatus(HttpServletResponse.SC_OK);
+			        baseRequest.setHandled(true);
+			        response.getWriter().println("OK");
 				}
 			}
 		});
