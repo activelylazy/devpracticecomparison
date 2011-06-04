@@ -21,21 +21,22 @@ public class DevPracticeServer {
 			@Override
 			public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 				if (target.equals("/ping")) {
-					response.setContentType("text/plain");
-			        response.setStatus(HttpServletResponse.SC_OK);
-			        baseRequest.setHandled(true);
-			        response.getWriter().println("Server OK");
+					sendResponse(baseRequest, response, "Server OK");
 				} else if (target.equals("/register")) {
 					String endpoint = request.getParameter("endpoint");
 					
 					DevPracticeClient client = new DevPracticeClient(endpoint);
 					client.sendStatus("registered");
-					
-					response.setContentType("text/plain");
-			        response.setStatus(HttpServletResponse.SC_OK);
-			        baseRequest.setHandled(true);
-			        response.getWriter().println("OK");
+
+					sendResponse(baseRequest, response, "OK");
 				}
+			}
+
+			private void sendResponse(Request baseRequest, HttpServletResponse response, String message) throws IOException {
+				response.setContentType("text/plain");
+				response.setStatus(HttpServletResponse.SC_OK);
+				baseRequest.setHandled(true);
+				response.getWriter().println(message);
 			}
 		});
 	}
