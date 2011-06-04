@@ -3,6 +3,7 @@ package uk.co.activelylazy.devpractice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ public class DevPracticeServer {
 
 	private Server server;
 	private List<DevPracticeTest> tests = new ArrayList<DevPracticeTest>();
+	int magicNumber = new Random().nextInt();
 
 	public DevPracticeServer() {
 		tests.add(new SayHelloWorldTest());
@@ -36,7 +38,7 @@ public class DevPracticeServer {
 					client.sendStatus("registered");
 
 					sendResponse(baseRequest, response, "OK");
-				} else if (target.equals("/forceTest")) {
+				} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {
 					int client = Integer.parseInt(request.getParameter("client"));
 					int iteration = Integer.parseInt(request.getParameter("iteration"));
 					

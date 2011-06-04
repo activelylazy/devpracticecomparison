@@ -54,7 +54,7 @@ public class DevPracticeServerTest {
 	correct_response_to_say_hello_test_generates_pass_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
 		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
 		client.setNextResponse("Hello world\n\n");
-		String content = makeRequest("http://localhost:8989/forceTest?client=0&iteration=0");
+		String content = makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
 		
 		assertThat(content, is("OK\n"));
 		assertThat(client.getStatus(), is("pass"));
