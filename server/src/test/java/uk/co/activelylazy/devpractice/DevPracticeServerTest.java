@@ -56,10 +56,12 @@ public class DevPracticeServerTest {
 		
 		client.setNextResponse("Hello world\n\n");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/SayHelloWorld"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("Goodbye, cruel world");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/SayHelloWorld"));
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
@@ -69,10 +71,12 @@ public class DevPracticeServerTest {
 		
 		client.setNextResponse("Echo this text back\n");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/Echo"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("Something else");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		assertThat(client.getLastRequestedURL(), is("/Echo"));
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
