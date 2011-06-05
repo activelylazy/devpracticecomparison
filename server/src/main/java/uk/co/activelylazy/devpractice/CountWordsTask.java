@@ -30,6 +30,8 @@ public class CountWordsTask implements DevPracticeTask {
 					count++;
 				}
 				lastWasWhitespace = true;
+			} else if (text.charAt(i) == '-') {
+				// Ignore
 			} else {
 				lastWasWhitespace = false;
 			}

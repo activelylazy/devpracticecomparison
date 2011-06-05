@@ -16,6 +16,8 @@ public class CountWordsTaskTest {
 		assertThat(task.countWords("hello world"), is(2));
 		assertThat(task.countWords("hello  world"), is(2));
 		assertThat(task.countWords("hello 2 a  world"), is(4));
+		assertThat(task.countWords("the - dashed - words"), is(3));
+		assertThat(task.countWords("but hyphenated-words don't"), is(3));
 	}
 	
 }
