@@ -13,9 +13,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-public class DevPracticeClient {
+public class DevPracticeClient extends Thread {
 
 	private String endpoint;
+	private volatile boolean close = false;
 	
 	public DevPracticeClient(String endpoint) {
 		this.endpoint = endpoint;
@@ -44,5 +45,20 @@ public class DevPracticeClient {
 		HttpResponse response = client.execute(post);
 		HttpEntity entity = response.getEntity();
 		return EntityUtils.toString(entity);
+	}
+	
+	public synchronized void close() {
+		this.close = true;
+	}
+
+	@Override
+	public void run() {
+		while (!close) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// Ignore
+			}
+		}
 	}
 }
