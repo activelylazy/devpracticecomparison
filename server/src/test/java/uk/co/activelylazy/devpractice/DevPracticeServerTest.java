@@ -39,14 +39,14 @@ public class DevPracticeServerTest {
 	server_responds_to_ping() throws IOException {
 		String content = makeRequest("http://localhost:8989/ping");
 		
-		assertThat(content, is("Server OK\n"));
+		assertThat(content.trim(), is("Server OK"));
 	}
 
 	@Test public void
 	after_registering_server_sends_registered_status_message() throws ClientProtocolException, UnsupportedEncodingException, IOException {
 		String content = makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
 		
-		assertThat(content, is("OK\n"));
+		assertThat(content.trim(), is("OK"));
 		assertThat(client.getStatus(), is("registered"));
 	}
 	
