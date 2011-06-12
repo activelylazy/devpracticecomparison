@@ -48,10 +48,13 @@ public class Client implements Servlet {
 	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 		HttpServletRequest req = (HttpServletRequest) request;
-		System.out.println("Got request "+req.getRequestURI());
+		String requestURI = req.getRequestURI();
+		System.out.println("Got request "+requestURI+" - "+request.getParameterMap());
 		
-		if (req.getRequestURI().equals("/register")) {
+		if (requestURI.equals("/register")) {
 			register();
+		} else if (requestURI.equals("/Status")) {
+			System.out.println("Got status "+req.getParameter("message"));
 		}
 	}
 
