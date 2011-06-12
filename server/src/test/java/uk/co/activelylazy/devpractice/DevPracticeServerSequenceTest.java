@@ -18,8 +18,8 @@ import org.apache.http.util.EntityUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 public class DevPracticeServerSequenceTest {
 
@@ -34,7 +34,7 @@ public class DevPracticeServerSequenceTest {
 		server.stop();
 	}
 
-	@Ignore	
+	@Ignore
 	@Test public void
 	client_sees_tasks_in_sequence() throws Exception {
 		final List<String> callSequence = new ArrayList<String>();

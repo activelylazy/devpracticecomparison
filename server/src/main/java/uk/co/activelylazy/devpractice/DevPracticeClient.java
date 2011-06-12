@@ -16,7 +16,6 @@ import org.apache.http.util.EntityUtils;
 public class DevPracticeClient extends Thread {
 
 	private String endpoint;
-	private volatile boolean close = false;
 	
 	public DevPracticeClient(String endpoint) {
 		this.endpoint = endpoint;
@@ -47,18 +46,4 @@ public class DevPracticeClient extends Thread {
 		return EntityUtils.toString(entity);
 	}
 	
-	public synchronized void close() {
-		this.close = true;
-	}
-
-	@Override
-	public void run() {
-		while (!close) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// Ignore
-			}
-		}
-	}
 }
