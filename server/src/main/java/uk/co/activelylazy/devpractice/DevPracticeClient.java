@@ -13,7 +13,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-public class DevPracticeClient extends Thread {
+public class DevPracticeClient {
 
 	private String endpoint;
 	

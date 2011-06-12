@@ -33,7 +33,9 @@ final class DevPracticeHandler extends AbstractHandler {
 			TaskRunner runner = new TaskRunner(client);
 			clients.add(runner);
 			client.sendStatus("registered");
-			client.start();
+			if (request.getParameter("runTests") == null) { 
+				runner.start();
+			}
 
 			sendResponse(baseRequest, response, "OK");
 		} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {

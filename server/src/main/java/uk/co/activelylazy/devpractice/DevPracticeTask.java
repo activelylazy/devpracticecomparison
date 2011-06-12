@@ -6,6 +6,6 @@ import org.apache.http.client.ClientProtocolException;
 
 public interface DevPracticeTask {
 
-	public void executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException;
+	public boolean executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException;
 	
 }

@@ -44,7 +44,8 @@ public class DevPracticeServerTest {
 
 	@Test public void
 	after_registering_server_sends_registered_status_message() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		String content = makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		String content = makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+				"&runTests=false");
 		
 		assertThat(content.trim(), is("OK"));
 		assertThat(client.getStatus(), is("registered"));
@@ -52,7 +53,8 @@ public class DevPracticeServerTest {
 	
 	@Test public void
 	response_to_say_hello_test_generates_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+				"&runTests=false");
 		
 		client.setNextResponse("Hello world\n\n");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
@@ -67,7 +69,8 @@ public class DevPracticeServerTest {
 	
 	@Test public void
 	echo_contents_back_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+				"&runTests=false");
 		
 		client.setNextResponse("Echo this text back\n");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
@@ -82,7 +85,8 @@ public class DevPracticeServerTest {
 	
 	@Test public void
 	count_words_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+		makeRequest("http://localhost:8989/register?endpoint=" + URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+				"&runTests=false");
 		
 		client.setNextResponse("0\n");
 		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=0&magic="+server.magicNumber);

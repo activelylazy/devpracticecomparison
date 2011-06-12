@@ -7,7 +7,7 @@ import org.apache.http.client.ClientProtocolException;
 public class CountWordsTask implements DevPracticeTask {
 
 	@Override
-	public void executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException {
+	public boolean executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException {
 		String response = client.makePOSTRequest("/CountWords",text);
 		int answer = Integer.parseInt(response.trim());
 		int expected = countWords(text);
@@ -16,6 +16,7 @@ public class CountWordsTask implements DevPracticeTask {
 		} else {
 			client.sendStatus("fail - expected "+expected+"; you sent "+answer);
 		}
+		return answer == expected;
 	}
 
 	int countWords(String text) {

@@ -7,12 +7,14 @@ import org.apache.http.client.ClientProtocolException;
 public class SayHelloWorldTask implements DevPracticeTask {
 
 	@Override
-	public void executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException {
+	public boolean executeFor(DevPracticeClient client, String text) throws ClientProtocolException, IOException {
 		String response = client.makeRequest("/SayHelloWorld");
 		if (response.trim().equalsIgnoreCase("Hello world")) {
 			client.sendStatus("pass");
+			return true;
 		} else {
 			client.sendStatus("fail");
+			return false;
 		}
 	}
 

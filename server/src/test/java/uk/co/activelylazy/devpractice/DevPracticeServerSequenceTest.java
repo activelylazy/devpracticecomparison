@@ -18,7 +18,6 @@ import org.apache.http.util.EntityUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DevPracticeServerSequenceTest {
@@ -34,7 +33,6 @@ public class DevPracticeServerSequenceTest {
 		server.stop();
 	}
 
-	@Ignore
 	@Test public void
 	client_sees_tasks_in_sequence() throws Exception {
 		final List<String> callSequence = new ArrayList<String>();
@@ -56,7 +54,7 @@ public class DevPracticeServerSequenceTest {
 			@Override
 			public String countWords(Map<String, String[]> params, String content) {
 				callSequence.add("Count words");
-				return null;
+				return Integer.toString(new CountWordsTask().countWords(content));
 			}
 		};
 		client.start();
@@ -71,7 +69,8 @@ public class DevPracticeServerSequenceTest {
 		} finally {
 			client.stop();
 		}
-		
+	
+		System.out.println("Got "+callSequence);
 		assertThat(callSequence, Matchers.contains("Status: registered","Say hello world", "Status: pass", "Echo", "Status: pass", 
 				"Count words", "Status: pass"));
 	}

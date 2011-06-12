@@ -3,12 +3,14 @@ package uk.co.activelylazy.devpractice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.http.client.ClientProtocolException;
 
 public class TaskRunner extends Thread {
-	private List<DevPracticeTask> tasks = new ArrayList<DevPracticeTask>();
-	private String[] texts = new String[] {
+	private static long TIME_BETWEEN_RUNS = 1000*10;
+	private static Random random = new Random();
+	private static String[] texts = new String[] {
 			"",
 			"word.",
 			"A false conclusion: I hate it as an unfilled can. To be up after midnight and to go to bed then, is early: so that to go to bed after midnight is to go to bed betimes. Does not our life consist of the four elements?",
@@ -23,6 +25,7 @@ public class TaskRunner extends Thread {
 			"I am invariably late for appointments - sometimes as much as two hours. I've tried to change my ways but the things that make me late are too strong, and too pleasing."
 		};
 	private volatile boolean close = false;
+	private List<DevPracticeTask> tasks = new ArrayList<DevPracticeTask>();
 	private DevPracticeClient client;
 
 	public TaskRunner(DevPracticeClient client) {
@@ -43,12 +46,28 @@ public class TaskRunner extends Thread {
 	@Override
 	public void run() {
 		while (!close) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// Ignore
+			long startTime = System.currentTimeMillis();
+			for (DevPracticeTask task : tasks) {
+				try {
+					if (!task.executeFor(client, texts[random.nextInt(texts.length)])) {
+						break;
+					}
+				} catch (ClientProtocolException e) {
+					break;
+				} catch (IOException e) {
+					break;
+				} catch (Throwable t) {
+					t.printStackTrace();
+					break;
+				}
+			}
+			while (System.currentTimeMillis() - startTime < TIME_BETWEEN_RUNS) {
+				try {
+					Thread.sleep(System.currentTimeMillis() - startTime);
+				} catch (InterruptedException e) {
+					// Ignore
+				}
 			}
 		}
 	}
-
 }
