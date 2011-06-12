@@ -8,6 +8,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,7 +22,7 @@ public class Client implements Servlet {
 	private static final String CLIENT = "http://localhost:9000/";
 	private static final String SERVER = "http://localhost:8989/";
 	
-	private HttpClient client;
+	private HttpClient client = new DefaultHttpClient();
 	
 	public HttpClient getClient() { return client; }
 	public void setClient(HttpClient client) { this.client = client; }
@@ -42,6 +43,19 @@ public class Client implements Servlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+	}
+
+	@Override
+	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+		HttpServletRequest req = (HttpServletRequest) request;
+		System.out.println("Got request "+req.getRequestURI());
+		
+		if (req.getRequestURI().equals("/register")) {
+			register();
+		}
+	}
+
+	public void register() throws ServletException {
 		try {
 			HttpGet get = new HttpGet(SERVER+"/register?endpoint="+URLEncoder.encode(CLIENT, "UTF-8"));
 			HttpResponse response = client.execute(get);
@@ -54,10 +68,4 @@ public class Client implements Servlet {
 			throw new ServletException(e);
 		}
 	}
-
-	@Override
-	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-		
-	}
-
 }
