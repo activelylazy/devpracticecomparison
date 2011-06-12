@@ -27,17 +27,22 @@ final class DevPracticeHandler extends AbstractHandler {
 		if (target.equals("/ping")) {
 			sendResponse(baseRequest, response, "Server OK");
 		} else if (target.equals("/register")) {
-			String endpoint = request.getParameter("endpoint");
-			
-			DevPracticeClient client = new DevPracticeClient(endpoint);
-			TaskRunner runner = new TaskRunner(client);
-			clients.add(runner);
-			client.sendStatus("registered");
-			if (request.getParameter("runTests") == null) { 
-				runner.start();
+			try {
+				String endpoint = request.getParameter("endpoint");
+				
+				DevPracticeClient client = new DevPracticeClient(endpoint);
+				TaskRunner runner = new TaskRunner(client);
+				clients.add(runner);
+				client.sendStatus("registered");
+				if (request.getParameter("runTests") == null) { 
+					runner.start();
+				}
+	
+				sendResponse(baseRequest, response, "OK");
+			} catch (Throwable t) {
+				t.printStackTrace();
+				sendResponse(baseRequest, response, "Error: "+t.getMessage());
 			}
-
-			sendResponse(baseRequest, response, "OK");
 		} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {
 			int client = Integer.parseInt(request.getParameter("client"));
 			int iteration = Integer.parseInt(request.getParameter("iteration"));

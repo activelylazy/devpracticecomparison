@@ -2,6 +2,7 @@ package uk.co.activelylazy.devpractice;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -47,6 +48,7 @@ public class TaskRunner extends Thread {
 	public void run() {
 		while (!close) {
 			long startTime = System.currentTimeMillis();
+			System.out.println(new Date().toString()+" - Running tasks against "+client.getEndpoint());
 			for (DevPracticeTask task : tasks) {
 				try {
 					if (!task.executeFor(client, texts[random.nextInt(texts.length)])) {
@@ -63,7 +65,7 @@ public class TaskRunner extends Thread {
 			}
 			while (System.currentTimeMillis() - startTime < TIME_BETWEEN_RUNS) {
 				try {
-					Thread.sleep(System.currentTimeMillis() - startTime);
+					Thread.sleep(TIME_BETWEEN_RUNS + startTime - System.currentTimeMillis());
 				} catch (InterruptedException e) {
 					// Ignore
 				}

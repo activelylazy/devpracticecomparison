@@ -19,7 +19,7 @@ public class DevPracticeClient {
 	
 	public DevPracticeClient(String endpoint) {
 		this.endpoint = endpoint;
-		if (this.endpoint.endsWith("/")) {
+		if (! this.endpoint.endsWith("/")) {
 			this.endpoint += "/";
 		}
 	}
@@ -44,6 +44,10 @@ public class DevPracticeClient {
 		HttpResponse response = client.execute(post);
 		HttpEntity entity = response.getEntity();
 		return EntityUtils.toString(entity);
+	}
+
+	public String getEndpoint() {
+		return endpoint;
 	}
 	
 }
