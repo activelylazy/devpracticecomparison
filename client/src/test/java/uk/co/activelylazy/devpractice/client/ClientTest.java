@@ -1,16 +1,14 @@
 package uk.co.activelylazy.devpractice.client;
 
 import java.io.IOException;
-import java.io.StringBufferInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -22,28 +20,28 @@ public class ClientTest {
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
 	
 	@Test public void
-	registers_client() throws ServletException, IOException {
-		final HttpClient httpClient = context.mock(HttpClient.class);
-		final HttpResponse httpResponse = context.mock(HttpResponse.class);
-		final HttpEntity httpEntity = context.mock(HttpEntity.class);
-		final String OK = "OK";
-		
+	client_handles_request() throws ServletException, IOException {
+		final RequestHandler.Factory factory = context.mock(RequestHandler.Factory.class);
+		final RequestHandler requestHandler = context.mock(RequestHandler.class);
 		final HttpServletRequest request = context.mock(HttpServletRequest.class);
 		final HttpServletResponse response = context.mock(HttpServletResponse.class);
-
+		final String uri = "some uri";
+		final Map<String, String[]> params = new HashMap<String, String[]>();
+		final String responseText = "the response";
+		final ServletOutputStream outputStream = context.mock(ServletOutputStream.class);
+		
 		context.checking(new Expectations() {{
-			oneOf(httpClient).execute(with(any(HttpGet.class))); will(returnValue(httpResponse));
-			oneOf(httpResponse).getEntity(); will(returnValue(httpEntity));
-			oneOf(httpEntity).getContent(); will(returnValue(new StringBufferInputStream(OK)));
-			allowing(httpEntity).getContentLength(); will(returnValue(new Integer(OK.length()).longValue()));
-			allowing(httpEntity).getContentType();
-			
-			allowing(request).getRequestURI(); will(returnValue("/register"));
-			ignoring(response);
+			oneOf(factory).create(); will(returnValue(requestHandler));
+			oneOf(request).getRequestURI(); will(returnValue(uri));
+			oneOf(request).getParameterMap(); will(returnValue(params));
+			oneOf(requestHandler).handle(uri, params); will(returnValue(responseText));
+			exactly(2).of(response).getOutputStream(); will(returnValue(outputStream));
+			oneOf(outputStream).flush();
+			oneOf(outputStream).write(with(responseText.getBytes()));
 		}});
 		
 		Client client = new Client();
-		client.setClient(httpClient);
+		client.setRequestHandlerFactory(factory);
 		
 		client.service(request, response);
 		

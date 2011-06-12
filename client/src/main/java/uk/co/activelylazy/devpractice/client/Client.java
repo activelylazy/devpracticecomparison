@@ -1,7 +1,7 @@
 package uk.co.activelylazy.devpractice.client;
 
 import java.io.IOException;
-import java.net.URLEncoder;
+import java.util.Map;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -10,23 +10,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import uk.co.activelylazy.devpractice.client.RequestHandler.Factory;
 
 public class Client implements Servlet {
 
-	private static final String CLIENT = "http://localhost:9000/";
-	private static final String SERVER = "http://localhost:8989/";
+	private Factory factory;
 	
-	private HttpClient client = new DefaultHttpClient();
-	
-	public HttpClient getClient() { return client; }
-	public void setClient(HttpClient client) { this.client = client; }
-
 	@Override
 	public void destroy() {
 	}
@@ -49,26 +38,13 @@ public class Client implements Servlet {
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String requestURI = req.getRequestURI();
-		System.out.println("Got request "+requestURI+" - "+request.getParameterMap());
+		Map<String, String[]> params = req.getParameterMap();
 		
-		if (requestURI.equals("/register")) {
-			register();
-		} else if (requestURI.equals("/Status")) {
-			System.out.println("Got status "+req.getParameter("message"));
-		}
+		String responseBody = factory.create().handle(requestURI, params);
+		
+		response.getOutputStream().write(responseBody.getBytes());
+		response.getOutputStream().flush();
 	}
 
-	public void register() throws ServletException {
-		try {
-			HttpGet get = new HttpGet(SERVER+"/register?endpoint="+URLEncoder.encode(CLIENT, "UTF-8"));
-			HttpResponse response = client.execute(get);
-			HttpEntity entity = response.getEntity();
-			String status = EntityUtils.toString(entity);
-			if ( ! status.trim().equals("OK")) {
-				throw new ServletException("Got response: "+status);
-			}
-		} catch (IOException e) {
-			throw new ServletException(e);
-		}
-	}
+	public void setRequestHandlerFactory(Factory factory) { this.factory = factory; }
 }
