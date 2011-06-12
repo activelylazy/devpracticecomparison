@@ -4,8 +4,8 @@
 package uk.co.activelylazy.devpractice;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 final class DevPracticeHandler extends AbstractHandler {
-	private List<TaskRunner> clients = new ArrayList<TaskRunner>();
+	private Map<String, TaskRunner> clients = new HashMap<String, TaskRunner>();
 	private int magicNumber;
 
 	public DevPracticeHandler(int magicNumber) {
@@ -32,7 +32,7 @@ final class DevPracticeHandler extends AbstractHandler {
 				
 				DevPracticeClient client = new DevPracticeClient(endpoint);
 				TaskRunner runner = new TaskRunner(client);
-				clients.add(runner);
+				clients.put(endpoint, runner);
 				client.sendStatus("registered");
 				if (request.getParameter("runTests") == null) { 
 					runner.start();
@@ -59,7 +59,7 @@ final class DevPracticeHandler extends AbstractHandler {
 	}
 
 	public void close() {
-		for (TaskRunner client : clients) {
+		for (TaskRunner client : clients.values()) {
 			client.close();
 		}
 	}

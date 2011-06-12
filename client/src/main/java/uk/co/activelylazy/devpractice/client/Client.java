@@ -35,7 +35,7 @@ public class Client {
 	public static void main(String[] args) {
 		try {
 			Client client = new Client();
-			String response = makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8"));
+			String response = makeRequest("http://localhost:8989/register?endpoint=" + URLEncoder.encode("http://localhost:9000/", "UTF-8"));
 			
 			
 		} catch (Throwable t) {
