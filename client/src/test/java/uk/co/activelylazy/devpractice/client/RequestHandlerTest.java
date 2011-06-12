@@ -48,5 +48,12 @@ public class RequestHandlerTest {
 		assertThat(status, is(OK));
 	}
 	
+	@Test public void
+	responds_to_hello_world() throws ServletException, IOException {
+		RequestHandler handler = new RequestHandler();
+		String response = handler.handle("SayHelloWorld", new HashMap<String, String[]>());
+		
+		assertThat(response, is("Hello world"));
+	}
 
 }

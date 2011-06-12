@@ -31,6 +31,8 @@ public class RequestHandler {
 	public String handle(String uri, Map<String, String[]> params) throws ServletException {
 		if (uri.equals("register")) {
 			return register();
+		} else if (uri.equals("SayHelloWorld")) {
+			return sayHelloWorld();
 		}
 		return null;
 	}
@@ -50,5 +52,7 @@ public class RequestHandler {
 		}
 	}
 	
-
+	private String sayHelloWorld() {
+		return "Hello world";
+	}
 }
