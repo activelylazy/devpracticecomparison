@@ -14,7 +14,7 @@ import uk.co.activelylazy.devpractice.client.RequestHandler.Factory;
 
 public class Client implements Servlet {
 
-	private Factory factory;
+	private Factory factory = new RequestHandler.DefaultFactory();
 	
 	@Override
 	public void destroy() {
@@ -42,8 +42,10 @@ public class Client implements Servlet {
 		
 		String responseBody = factory.create().handle(requestURI, params);
 		
-		response.getOutputStream().write(responseBody.getBytes());
-		response.getOutputStream().flush();
+		if (responseBody != null) {
+			response.getOutputStream().write(responseBody.getBytes());
+			response.getOutputStream().flush();
+		}
 	}
 
 	public void setRequestHandlerFactory(Factory factory) { this.factory = factory; }

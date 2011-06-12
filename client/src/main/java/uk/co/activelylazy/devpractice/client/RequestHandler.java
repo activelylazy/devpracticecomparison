@@ -21,7 +21,7 @@ public class RequestHandler {
 	private HttpClient client = new DefaultHttpClient();
 
 	public interface Factory { public RequestHandler create(); }
-	public class DefaultFactory implements Factory {
+	public static class DefaultFactory implements Factory {
 		@Override public RequestHandler create() { return new RequestHandler(); }
 	}
 
