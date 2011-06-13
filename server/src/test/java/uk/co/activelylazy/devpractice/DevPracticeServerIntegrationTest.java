@@ -88,8 +88,7 @@ public class DevPracticeServerIntegrationTest {
 	@Test public void
 	count_words_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
 		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
-		makeRequest("http://localhost:8989/register?endpoint=" + endpoint +
-				"&runTests=false");
+		makeRequest("http://localhost:8989/register?endpoint=" + endpoint + "&runTests=false");
 		
 		client.setNextResponse("0\n");
 		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=0&magic="+server.magicNumber);
@@ -110,6 +109,15 @@ public class DevPracticeServerIntegrationTest {
 		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=2&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/CountWords"));
 		assertThat(client.getStatus(), is("fail - expected 46; you sent 10"));
+	}
+	
+	@Test public void
+	score_after_registering_is_zero() throws ClientProtocolException, IOException {
+		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
+		makeRequest("http://localhost:8989/register?endpoint=" + endpoint + "&runTests=false");
+		
+		String response = makeRequest("http://localhost:8989/scores.json?client="+endpoint).trim();
+		assertThat(response, is("{\"score\":0}"));
 	}
 	
 	private String makeRequest(String url) throws IOException, ClientProtocolException {

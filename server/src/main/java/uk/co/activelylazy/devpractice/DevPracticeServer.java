@@ -15,7 +15,8 @@ public class DevPracticeServer {
 		server = new Server(8989);
 		handler = new DevPracticeHandler(new PingListener(), 
 										 new RegisterListener(participants, new DevPracticeClient.DefaultFactory()),
-										 new ForceTestListener(participants));
+										 new ForceTestListener(participants), 
+										 new ScoresListener(participants));
 		server.setHandler(handler);
 	}
 	

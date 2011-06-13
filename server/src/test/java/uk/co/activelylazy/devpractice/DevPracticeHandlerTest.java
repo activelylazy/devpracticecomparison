@@ -35,7 +35,7 @@ public class DevPracticeHandlerTest {
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
-		DevPracticeHandler handler = new DevPracticeHandler(null, null, null);
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, null, null);
 		handler.registerListener("/test", listener);
 		handler.handle("/test", baseRequest, request, response);
 		
@@ -57,7 +57,7 @@ public class DevPracticeHandlerTest {
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
-		DevPracticeHandler handler = new DevPracticeHandler(null, null, null);
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, null, null);
 		handler.handle("/notfound", baseRequest, request, response);
 		
 		context.assertIsSatisfied();
@@ -80,7 +80,7 @@ public class DevPracticeHandlerTest {
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
-		DevPracticeHandler handler = new DevPracticeHandler(listener, null, null);
+		DevPracticeHandler handler = new DevPracticeHandler(listener, null, null, null);
 		handler.handle("/ping", baseRequest, request, response);
 		
 		context.assertIsSatisfied();
@@ -103,7 +103,7 @@ public class DevPracticeHandlerTest {
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
-		DevPracticeHandler handler = new DevPracticeHandler(null, listener, null);
+		DevPracticeHandler handler = new DevPracticeHandler(null, listener, null, null);
 		handler.handle("/register", baseRequest, request, response);
 		
 		context.assertIsSatisfied();
@@ -126,8 +126,33 @@ public class DevPracticeHandlerTest {
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
-		DevPracticeHandler handler = new DevPracticeHandler(null, null, listener);
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, listener, null);
 		handler.handle("/forceTest", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	handler_responds_to_scores() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		final String responseText = "{\"score\":0}";
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); 
+			will(returnValue(responseText));
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println(responseText);
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, null, listener);
+		handler.handle("/scores.json", baseRequest, request, response);
 		
 		context.assertIsSatisfied();
 	}

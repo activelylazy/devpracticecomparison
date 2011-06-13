@@ -20,10 +20,12 @@ final class DevPracticeHandler extends AbstractHandler {
 
 	public DevPracticeHandler(RequestListener pingListener,
 							  RequestListener registerListener,
-							  RequestListener forceTestListener) {
+							  RequestListener forceTestListener,
+							  RequestListener scoresListener) {
 		listeners.put("/ping", pingListener);
 		listeners.put("/register", registerListener);
 		listeners.put("/forceTest", forceTestListener);
+		listeners.put("/scores.json", scoresListener);
 	}
 
 	@Override

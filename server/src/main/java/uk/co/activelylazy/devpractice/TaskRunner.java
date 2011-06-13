@@ -70,4 +70,8 @@ public class TaskRunner extends Thread {
 			}
 		}
 	}
+
+	public int getScore() {
+		return 0;
+	}
 }
