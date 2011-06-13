@@ -20,7 +20,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DevPracticeServerSequenceTest {
+public class DevPracticeServerSequenceIntegrationTest {
 
 	private DevPracticeServer server;
 
@@ -70,7 +70,6 @@ public class DevPracticeServerSequenceTest {
 			client.stop();
 		}
 	
-		System.out.println("Got "+callSequence);
 		assertThat(callSequence, Matchers.contains("Status: registered","Say hello world", "Status: pass", "Echo", "Status: pass", 
 				"Count words", "Status: pass"));
 	}
