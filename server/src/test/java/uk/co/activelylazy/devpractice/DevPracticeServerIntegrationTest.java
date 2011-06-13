@@ -113,11 +113,12 @@ public class DevPracticeServerIntegrationTest {
 	
 	@Test public void
 	score_after_registering_is_zero() throws ClientProtocolException, IOException {
-		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
-		makeRequest("http://localhost:8989/register?endpoint=" + endpoint + "&runTests=false");
+		String endpoint = "http://localhost:9000/";
+		String encodedEndpoint = URLEncoder.encode(endpoint, "UTF-8");
+		makeRequest("http://localhost:8989/register?endpoint=" + encodedEndpoint + "&runTests=false");
 		
-		String response = makeRequest("http://localhost:8989/scores.json?client="+endpoint).trim();
-		assertThat(response, is("{\"score\":0}"));
+		String response = makeRequest("http://localhost:8989/scores.json?client="+encodedEndpoint).trim();
+		assertThat(response, is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}]}"));
 	}
 	
 	private String makeRequest(String url) throws IOException, ClientProtocolException {

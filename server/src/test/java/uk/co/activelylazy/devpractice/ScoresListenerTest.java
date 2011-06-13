@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,14 +26,14 @@ public class ScoresListenerTest {
 		ScoresListener listener = new ScoresListener(participants);
 		
 		context.checking(new Expectations() {{
-			oneOf(request).getParameter("client"); will(returnValue(endpoint));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
+			oneOf(participants).getParticipants(); will(returnValue(Arrays.asList(participant)));
 			oneOf(participant).getScore(); will(returnValue(0));
+			oneOf(participant).getEndpoint(); will(returnValue(endpoint));
 		}});
 		
 		String response = listener.request(request);
 
-		assertThat(response, is("{\"score\":0}"));
+		assertThat(response, is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}]}"));
 		context.assertIsSatisfied();
 	}
 }
