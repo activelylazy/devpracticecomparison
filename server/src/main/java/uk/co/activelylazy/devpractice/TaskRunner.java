@@ -27,6 +27,7 @@ public class TaskRunner extends Thread {
 	private volatile boolean close = false;
 	private List<DevPracticeTask> tasks = new ArrayList<DevPracticeTask>();
 	private DevPracticeClient client;
+	private int score;
 
 	public TaskRunner(DevPracticeClient client) {
 		this.client = client;
@@ -35,12 +36,18 @@ public class TaskRunner extends Thread {
 		tasks.add(new CountWordsTask());
 	}
 	
+	public int getScore() { return this.score; }
+	
 	boolean executeTask(int iteration, int text) throws ClientProtocolException, IOException {
 		return executeTask(text, tasks.get(iteration));
 	}
 
 	boolean executeTask(int text, final DevPracticeTask task) throws ClientProtocolException, IOException {
-		return task.executeFor(client,texts[text]);
+		boolean pass = task.executeFor(client,texts[text]);
+		if (pass) {
+			this.score++;
+		}
+		return pass;
 	}
 	
 	public synchronized void close() {
@@ -73,9 +80,5 @@ public class TaskRunner extends Thread {
 				}
 			}
 		}
-	}
-
-	public int getScore() {
-		return 0;
 	}
 }
