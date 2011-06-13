@@ -35,8 +35,12 @@ public class TaskRunner extends Thread {
 		tasks.add(new CountWordsTask());
 	}
 	
-	public void executeTask(int iteration, int text) throws ClientProtocolException, IOException {
-		tasks.get(iteration).executeFor(client,texts[text]);
+	boolean executeTask(int iteration, int text) throws ClientProtocolException, IOException {
+		return executeTask(text, tasks.get(iteration));
+	}
+
+	boolean executeTask(int text, final DevPracticeTask task) throws ClientProtocolException, IOException {
+		return task.executeFor(client,texts[text]);
 	}
 	
 	public synchronized void close() {
@@ -49,7 +53,7 @@ public class TaskRunner extends Thread {
 			long startTime = System.currentTimeMillis();
 			for (DevPracticeTask task : tasks) {
 				try {
-					if (!task.executeFor(client, texts[random.nextInt(texts.length)])) {
+					if (!executeTask(random.nextInt(texts.length), task)) {
 						break;
 					}
 				} catch (ClientProtocolException e) {
