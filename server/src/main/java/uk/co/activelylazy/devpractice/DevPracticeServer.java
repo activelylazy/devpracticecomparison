@@ -9,10 +9,13 @@ public class DevPracticeServer {
 	private Server server;
 	int magicNumber = new Random().nextInt();
 	private DevPracticeHandler handler;
+	private ParticipantRegistry participants = new ParticipantRegistry();
 	
 	public DevPracticeServer() {
 		server = new Server(8989);
-		handler = new DevPracticeHandler(magicNumber);
+		handler = new DevPracticeHandler(new PingListener(), 
+										 new RegisterListener(participants, new DevPracticeClient.DefaultFactory()),
+										 new ForceTestListener(participants));
 		server.setHandler(handler);
 	}
 	
@@ -21,7 +24,7 @@ public class DevPracticeServer {
 	}
 	
 	public void stop() throws Exception {
-		handler.close();
+		participants.close();
 		server.stop();
 	}
 	

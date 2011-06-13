@@ -15,62 +15,36 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 final class DevPracticeHandler extends AbstractHandler {
-	private Map<String, TaskRunner> clients = new HashMap<String, TaskRunner>();
-	private int magicNumber;
+	protected static final String NOT_FOUND_MESSAGE = "Path not found.\n\nSend /register?endpoint=... to register";
+	private Map<String, RequestListener> listeners = new HashMap<String, RequestListener>();
 
-	public DevPracticeHandler(int magicNumber) {
-		this.magicNumber = magicNumber;
+	public DevPracticeHandler(RequestListener pingListener,
+							  RequestListener registerListener,
+							  RequestListener forceTestListener) {
+		listeners.put("/ping", pingListener);
+		listeners.put("/register", registerListener);
+		listeners.put("/forceTest", forceTestListener);
 	}
 
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		if (target.equals("/ping")) {
-			sendResponse(baseRequest, response, "Server OK");
-		} else if (target.equals("/register")) {
-			try {
-				String endpoint = request.getParameter("endpoint");
-				
-				DevPracticeClient client = new DevPracticeClient(endpoint);
-				TaskRunner runner = new TaskRunner(client);
-				clients.put(endpoint, runner);
-				client.sendStatus("registered");
-				if (request.getParameter("runTests") == null) { 
-					runner.start();
-				}
-	
-				sendResponse(baseRequest, response, "OK");
-			} catch (Throwable t) {
-				t.printStackTrace();
-				sendResponse(baseRequest, response, "Error: "+t.getMessage());
-			}
-		} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {
-			String client = request.getParameter("client");
-			int iteration = Integer.parseInt(request.getParameter("iteration"));
-			int text = 0;
-			if (request.getParameter("text") != null) {
-				text = Integer.parseInt(request.getParameter("text"));
-			}
-			
-			TaskRunner theClient = clients.get(client);
-			if (theClient == null) {
-				throw new NullPointerException("No such client "+client);
-			}
-			theClient.executeTask(iteration, text);
-			
-			sendResponse(baseRequest, response, "OK");
-		}
+		RequestListener listener = listeners.get(target);
+		if (listener == null) {
+			sendResponse(HttpServletResponse.SC_NOT_FOUND, baseRequest, response, NOT_FOUND_MESSAGE);
+			return;
+		}			
+		String responseText = listener.request(request);
+		sendResponse(HttpServletResponse.SC_OK, baseRequest, response, responseText);
 	}
 
-	public void close() {
-		for (TaskRunner client : clients.values()) {
-			client.close();
-		}
-	}
-
-	private void sendResponse(Request baseRequest, HttpServletResponse response, String message) throws IOException {
+	private void sendResponse(int statusCode, Request baseRequest, HttpServletResponse response, String message) throws IOException {
 		response.setContentType("text/plain");
-		response.setStatus(HttpServletResponse.SC_OK);
+		response.setStatus(statusCode);
 		baseRequest.setHandled(true);
 		response.getWriter().println(message);
+	}
+
+	public void registerListener(String path, RequestListener listener) {
+		listeners.put(path, listener);
 	}
 }

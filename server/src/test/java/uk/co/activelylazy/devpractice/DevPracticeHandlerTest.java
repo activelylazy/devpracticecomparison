@@ -1,0 +1,134 @@
+package uk.co.activelylazy.devpractice;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.server.Request;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Test;
+
+
+public class DevPracticeHandlerTest {
+
+	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
+	
+	@Test public void
+	handler_handles_request() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println("OK");
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, null);
+		handler.registerListener("/test", listener);
+		handler.handle("/test", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	handler_responds_to_unknown_path() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		
+		context.checking(new Expectations() {{
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println(DevPracticeHandler.NOT_FOUND_MESSAGE);
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, null);
+		handler.handle("/notfound", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	handler_responds_to_ping() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); will(returnValue("Server OK"));
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println("Server OK");
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(listener, null, null);
+		handler.handle("/ping", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	handler_responds_to_register() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println("OK");
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(null, listener, null);
+		handler.handle("/register", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	handler_responds_to_force_test() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(response).setContentType("text/plain");
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println("OK");
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(null, null, listener);
+		handler.handle("/forceTest", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+}

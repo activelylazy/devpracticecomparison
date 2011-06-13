@@ -15,6 +15,12 @@ import org.apache.http.util.EntityUtils;
 
 public class DevPracticeClient {
 
+	public static interface Factory { DevPracticeClient create(String endpoint); }
+	public static class DefaultFactory implements Factory {
+		public DevPracticeClient create(String endpoint) {
+			return new DevPracticeClient(endpoint);
+		}
+	}
 	private String endpoint;
 	
 	public DevPracticeClient(String endpoint) {
