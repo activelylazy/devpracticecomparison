@@ -44,7 +44,7 @@ final class DevPracticeHandler extends AbstractHandler {
 				sendResponse(baseRequest, response, "Error: "+t.getMessage());
 			}
 		} else if (target.equals("/forceTest") && Integer.parseInt(request.getParameter("magic")) == magicNumber) {
-			int client = Integer.parseInt(request.getParameter("client"));
+			String client = request.getParameter("client");
 			int iteration = Integer.parseInt(request.getParameter("iteration"));
 			int text = 0;
 			if (request.getParameter("text") != null) {
@@ -52,6 +52,9 @@ final class DevPracticeHandler extends AbstractHandler {
 			}
 			
 			TaskRunner theClient = clients.get(client);
+			if (theClient == null) {
+				throw new NullPointerException("No such client "+client);
+			}
 			theClient.executeTask(iteration, text);
 			
 			sendResponse(baseRequest, response, "OK");

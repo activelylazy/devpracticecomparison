@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DevPracticeServerTest {
+public class DevPracticeServerIntegrationTest {
 
 	private DevPracticeServer server;
 	private StubClient client;
@@ -53,58 +53,61 @@ public class DevPracticeServerTest {
 	
 	@Test public void
 	response_to_say_hello_test_generates_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
+		makeRequest("http://localhost:8989/register?endpoint="+endpoint +
 				"&runTests=false");
 		
 		client.setNextResponse("Hello world\n\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=0&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/SayHelloWorld"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("Goodbye, cruel world");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=0&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=0&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/SayHelloWorld"));
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
 	@Test public void
 	echo_contents_back_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
+		makeRequest("http://localhost:8989/register?endpoint="+endpoint +
 				"&runTests=false");
 		
 		client.setNextResponse("Echo this text back\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=1&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/Echo"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("Something else");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=1&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=1&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/Echo"));
 		assertThat(client.getStatus(), is("fail"));
 	}
 	
 	@Test public void
 	count_words_test_gives_correct_status() throws ClientProtocolException, UnsupportedEncodingException, IOException {
-		makeRequest("http://localhost:8989/register?endpoint=" + URLEncoder.encode("http://localhost:9000/", "UTF-8") +
+		String endpoint = URLEncoder.encode("http://localhost:9000/", "UTF-8");
+		makeRequest("http://localhost:8989/register?endpoint=" + endpoint +
 				"&runTests=false");
 		
 		client.setNextResponse("0\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=0&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=0&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/CountWords"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("1\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=1&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=1&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/CountWords"));
 		assertThat(client.getStatus(), is("pass"));
 
 		client.setNextResponse("46\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=2&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=2&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/CountWords"));
 		assertThat(client.getStatus(), is("pass"));
 		
 		client.setNextResponse("10\n");
-		makeRequest("http://localhost:8989/forceTest?client=0&iteration=2&text=2&magic="+server.magicNumber);
+		makeRequest("http://localhost:8989/forceTest?client="+endpoint+"&iteration=2&text=2&magic="+server.magicNumber);
 		assertThat(client.getLastRequestedURL(), is("/CountWords"));
 		assertThat(client.getStatus(), is("fail - expected 46; you sent 10"));
 	}
@@ -116,5 +119,4 @@ public class DevPracticeServerTest {
 		HttpEntity entity = response.getEntity();
 		return EntityUtils.toString(entity);
 	}
-	
 }
