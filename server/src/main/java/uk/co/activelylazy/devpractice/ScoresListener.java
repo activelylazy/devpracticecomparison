@@ -23,16 +23,31 @@ public class ScoresListener implements RequestListener {
 		public String getEndpoint() { return endpoint; }
 	}
 	
-	public static class ClientsJSON {
+	public static class GroupJSON {
+		private String name;
 		private ClientJSON[] clients;
-		public ClientsJSON(List<TaskRunner> runners) {
-			clients = Collections2.transform(runners, new Function<TaskRunner, ClientJSON>() {
+		public GroupJSON(ParticipantGroup group) {
+			name = group.getGroupName();
+			clients = Collections2.transform(group.getParticipants(), new Function<TaskRunner, ClientJSON>() {
 				@Override public ClientJSON apply(TaskRunner runner) {
 					return new ClientJSON(runner);
 				}
 			}).toArray(new ClientJSON[]{});
 		}
+		public String getName() { return name; }
 		public ClientJSON[] getClients() { return clients; }
+	}
+	
+	public static class GroupsJSON {
+		private GroupJSON[] groups;
+		public GroupsJSON(List<ParticipantGroup> theGroups) {
+			groups = Collections2.transform(theGroups, new Function<ParticipantGroup, GroupJSON>() {
+				@Override public GroupJSON apply(ParticipantGroup group) {
+					return new GroupJSON(group);
+				}
+			}).toArray(new GroupJSON[]{});
+		}
+		public GroupJSON[] getGroups() { return groups; }
 	}
 
 	private final ParticipantRegistry participants;
@@ -43,9 +58,9 @@ public class ScoresListener implements RequestListener {
 	
 	@Override
 	public String request(HttpServletRequest request) throws IOException {
-		List<TaskRunner> clients = participants.getParticipants();
+		List<ParticipantGroup> groups = participants.getParticipantGroups();
 		
-		ClientsJSON json = new ClientsJSON(clients);
+		GroupsJSON json = new GroupsJSON(groups);
 		return JSONSerializer.toJSON(json).toString();
 	}
 

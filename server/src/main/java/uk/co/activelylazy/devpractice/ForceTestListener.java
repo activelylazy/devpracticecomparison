@@ -20,10 +20,11 @@ public class ForceTestListener implements RequestListener {
 		if (request.getParameter("text") != null) {
 			text = Integer.parseInt(request.getParameter("text"));
 		}
+		String groupName = request.getParameter("group");
 		
-		TaskRunner theClient = participants.getParticipant(client);
+		TaskRunner theClient = participants.getParticipant(client, groupName);
 		if (theClient == null) {
-			throw new NullPointerException("No such client "+client);
+			throw new NullPointerException("No such client "+client+" in group "+groupName);
 		}
 		theClient.executeTask(iteration, text);
 		

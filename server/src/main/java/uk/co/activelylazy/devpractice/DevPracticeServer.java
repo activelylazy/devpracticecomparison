@@ -5,11 +5,12 @@ import java.util.Random;
 import org.eclipse.jetty.server.Server;
 
 public class DevPracticeServer {
-
+	private static final String[] GROUP_NAMES = {"TDD", "NoTDD"};
+	
 	private Server server;
 	int magicNumber = new Random().nextInt();
 	private DevPracticeHandler handler;
-	private ParticipantRegistry participants = new ParticipantRegistry();
+	private ParticipantRegistry participants = new ParticipantRegistry(GROUP_NAMES);
 	
 	public DevPracticeServer() {
 		server = new Server(8989);

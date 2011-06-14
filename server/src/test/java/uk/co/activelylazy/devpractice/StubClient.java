@@ -55,5 +55,7 @@ public class StubClient {
 	public synchronized String getStatus() { return status; }
 	private synchronized void setStatus(String status) { this.status = status; }
 	
-	
+	public String getEndpoint() {
+		return "http://localhost:9000/";
+	}
 }

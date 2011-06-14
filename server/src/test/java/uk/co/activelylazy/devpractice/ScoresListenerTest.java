@@ -22,18 +22,21 @@ public class ScoresListenerTest {
 		final HttpServletRequest request = context.mock(HttpServletRequest.class);
 		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
 		final TaskRunner participant = context.mock(TaskRunner.class);
+		final ParticipantGroup group = context.mock(ParticipantGroup.class);
 		final String endpoint = "http://endpoint.example.com/";
 		ScoresListener listener = new ScoresListener(participants);
 		
 		context.checking(new Expectations() {{
-			oneOf(participants).getParticipants(); will(returnValue(Arrays.asList(participant)));
+			oneOf(participants).getParticipantGroups(); will(returnValue(Arrays.asList(group)));
+			allowing(group).getParticipants(); will(returnValue(Arrays.asList(participant)));
+			allowing(group).getGroupName(); will(returnValue("TDD"));
 			oneOf(participant).getScore(); will(returnValue(0));
 			oneOf(participant).getEndpoint(); will(returnValue(endpoint));
 		}});
 		
 		String response = listener.request(request);
 
-		assertThat(response, is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}]}"));
+		assertThat(response, is("{\"groups\":[{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}],\"name\":\"TDD\"}]}"));
 		context.assertIsSatisfied();
 	}
 }

@@ -23,13 +23,15 @@ public class ForceTestListenerTest {
 		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
 		final TaskRunner client = context.mock(TaskRunner.class);
 		final String endpoint = "http://endpoint.example.com";
+		final String groupName = "TDD";
 		ForceTestListener listener = new ForceTestListener(participants);
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("client"); will(returnValue(endpoint));
 			oneOf(request).getParameter("iteration"); will(returnValue("0"));
 			oneOf(request).getParameter("text"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(client));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(participants).getParticipant(endpoint, groupName); will(returnValue(client));
 			oneOf(client).executeTask(0, 0);
 		}});
 		
