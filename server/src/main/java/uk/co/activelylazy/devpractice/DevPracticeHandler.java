@@ -18,10 +18,12 @@ final class DevPracticeHandler extends AbstractHandler {
 	protected static final String NOT_FOUND_MESSAGE = "Path not found.\n\nSend /register?endpoint=... to register";
 	private Map<String, RequestListener> listeners = new HashMap<String, RequestListener>();
 
-	public DevPracticeHandler(RequestListener pingListener,
+	public DevPracticeHandler(RequestListener jsListener,
+							  RequestListener pingListener,
 							  RequestListener registerListener,
 							  RequestListener forceTestListener,
 							  RequestListener scoresListener) {
+		listeners.put("/js/jquery.flot.js", jsListener);
 		listeners.put("/ping", pingListener);
 		listeners.put("/register", registerListener);
 		listeners.put("/forceTest", forceTestListener);
