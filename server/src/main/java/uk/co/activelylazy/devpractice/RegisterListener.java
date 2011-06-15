@@ -20,15 +20,15 @@ public class RegisterListener implements RequestListener {
 	}
 	
 	@Override
-	public String request(HttpServletRequest request) throws IOException {
+	public Response request(HttpServletRequest request) throws IOException {
 		String endpoint = request.getParameter("endpoint");
 		if (endpoint == null || "".equals(endpoint)) {
-			return "Error - please pass parameter 'endpoint', which should be a http://.../ URL";
+			return Response.plainText("Error - please pass parameter 'endpoint', which should be a http://.../ URL");
 		}
 		String groupName = request.getParameter("group");
 		if (groupName == null || !participants.isValidGroup(groupName)) {
-			return "Error - please pass parameter 'group', which should be one of " + 
-				StringUtils.join(participants.getGroupNames(), ", ");
+			return Response.plainText("Error - please pass parameter 'group', which should be one of " + 
+				StringUtils.join(participants.getGroupNames(), ", "));
 		}
 		
 		DevPracticeClient client = clientFactory.create(endpoint);
@@ -36,14 +36,14 @@ public class RegisterListener implements RequestListener {
 		try {
 			client.sendStatus("registered");
 		} catch (IOException e){
-			return "Failed to register client: "+e.getMessage();
+			return Response.plainText("Failed to register client: "+e.getMessage());
 		}
 		participants.addParticipant(endpoint, runner, groupName);
 		if (request.getParameter("runTests") == null) { 
 			runner.start();
 		}
 
-		return "OK";
+		return Response.plainText("OK");
 	}
 
 }

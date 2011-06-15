@@ -13,7 +13,7 @@ public class ForceTestListener implements RequestListener {
 	}
 
 	@Override
-	public String request(HttpServletRequest request) throws IOException {
+	public Response request(HttpServletRequest request) throws IOException {
 		String client = request.getParameter("client");
 		int iteration = Integer.parseInt(request.getParameter("iteration"));
 		int text = 0;
@@ -28,7 +28,7 @@ public class ForceTestListener implements RequestListener {
 		}
 		theClient.executeTask(iteration, text);
 		
-		return "OK";
+		return Response.plainText("OK");
 	}
 
 }

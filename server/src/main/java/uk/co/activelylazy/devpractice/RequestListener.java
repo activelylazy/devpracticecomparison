@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface RequestListener {
 
-	String request(HttpServletRequest request) throws IOException;
+	Response request(HttpServletRequest request) throws IOException;
 
 }

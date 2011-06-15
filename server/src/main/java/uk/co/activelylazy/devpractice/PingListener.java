@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 public class PingListener implements RequestListener {
 
 	@Override
-	public String request(HttpServletRequest request) {
-		return "Server OK";
+	public Response request(HttpServletRequest request) {
+		return Response.plainText("Server OK");
 	}
 
 }

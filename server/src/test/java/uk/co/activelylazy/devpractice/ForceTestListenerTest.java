@@ -1,6 +1,6 @@
 package uk.co.activelylazy.devpractice;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -35,9 +35,7 @@ public class ForceTestListenerTest {
 			oneOf(client).executeTask(0, 0);
 		}});
 		
-		String responseText = listener.request(request);
-		
-		assertThat(responseText, is("OK"));
+		assertThat(listener.request(request), ResponseMatcher.plain_text().with_content(equalTo("OK")));
 		context.assertIsSatisfied();
 	}
 }

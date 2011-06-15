@@ -27,7 +27,7 @@ public class DevPracticeHandlerTest {
 		final PrintWriter writer = context.mock(PrintWriter.class);
 		
 		context.checking(new Expectations() {{
-			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(listener).request(request); will(returnValue(Response.plainText("OK")));
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_OK);
 			oneOf(response).getWriter(); will(returnValue(writer));
@@ -53,7 +53,7 @@ public class DevPracticeHandlerTest {
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
 			oneOf(response).getWriter(); will(returnValue(writer));
-			oneOf(writer).println(DevPracticeHandler.NOT_FOUND_MESSAGE);
+			oneOf(writer).println(DevPracticeHandler.NOT_FOUND.getContent());
 			oneOf(baseRequest).setHandled(true);
 		}});
 		
@@ -72,7 +72,7 @@ public class DevPracticeHandlerTest {
 		final PrintWriter writer = context.mock(PrintWriter.class);
 		
 		context.checking(new Expectations() {{
-			oneOf(listener).request(request); will(returnValue("Server OK"));
+			oneOf(listener).request(request); will(returnValue(Response.plainText("Server OK")));
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_OK);
 			oneOf(response).getWriter(); will(returnValue(writer));
@@ -95,7 +95,7 @@ public class DevPracticeHandlerTest {
 		final PrintWriter writer = context.mock(PrintWriter.class);
 		
 		context.checking(new Expectations() {{
-			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(listener).request(request); will(returnValue(Response.plainText("OK")));
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_OK);
 			oneOf(response).getWriter(); will(returnValue(writer));
@@ -118,7 +118,7 @@ public class DevPracticeHandlerTest {
 		final PrintWriter writer = context.mock(PrintWriter.class);
 		
 		context.checking(new Expectations() {{
-			oneOf(listener).request(request); will(returnValue("OK"));
+			oneOf(listener).request(request); will(returnValue(Response.plainText("OK")));
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_OK);
 			oneOf(response).getWriter(); will(returnValue(writer));
@@ -143,7 +143,7 @@ public class DevPracticeHandlerTest {
 		
 		context.checking(new Expectations() {{
 			oneOf(listener).request(request); 
-			will(returnValue(responseText));
+			will(returnValue(Response.plainText(responseText)));
 			oneOf(response).setContentType("text/plain");
 			oneOf(response).setStatus(HttpServletResponse.SC_OK);
 			oneOf(response).getWriter(); will(returnValue(writer));

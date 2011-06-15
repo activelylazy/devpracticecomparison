@@ -57,11 +57,11 @@ public class ScoresListener implements RequestListener {
 	}
 	
 	@Override
-	public String request(HttpServletRequest request) throws IOException {
+	public Response request(HttpServletRequest request) throws IOException {
 		List<ParticipantGroup> groups = participants.getParticipantGroups();
 		
 		GroupsJSON json = new GroupsJSON(groups);
-		return JSONSerializer.toJSON(json).toString();
+		return new Response("text/json", JSONSerializer.toJSON(json).toString());
 	}
 
 }

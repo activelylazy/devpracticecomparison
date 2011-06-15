@@ -39,9 +39,7 @@ public class RegisterListenerTest {
 			oneOf(client).sendStatus("registered");
 		}});
 		
-		String responseText = listener.request(request);
-		
-		assertThat(responseText, is("OK"));
+		assertThat(listener.request(request), ResponseMatcher.plain_text().with_content(is("OK")));
 		context.assertIsSatisfied();
 	}
 	
@@ -63,9 +61,8 @@ public class RegisterListenerTest {
 			oneOf(client).sendStatus("registered"); will(throwException(new IOException("Cannot connect")));
 		}});
 		
-		String responseText = listener.request(request);
-		
-		assertThat(responseText, is("Failed to register client: Cannot connect"));
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Failed to register client: Cannot connect")));
 		context.assertIsSatisfied();
 	}
 	
@@ -80,9 +77,8 @@ public class RegisterListenerTest {
 			oneOf(request).getParameter("endpoint"); will(returnValue(null));
 		}});
 		
-		String responseText = listener.request(request);
-		
-		assertThat(responseText, is("Error - please pass parameter 'endpoint', which should be a http://.../ URL"));
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Error - please pass parameter 'endpoint', which should be a http://.../ URL")));
 		context.assertIsSatisfied();
 	}
 	
@@ -99,9 +95,8 @@ public class RegisterListenerTest {
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
 		}});
 		
-		String responseText = listener.request(request);
-		
-		assertThat(responseText, is("Error - please pass parameter 'group', which should be one of TDD, NoTDD"));
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Error - please pass parameter 'group', which should be one of TDD, NoTDD")));
 		context.assertIsSatisfied();
 	}
 }

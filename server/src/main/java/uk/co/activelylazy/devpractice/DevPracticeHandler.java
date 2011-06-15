@@ -15,15 +15,16 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 final class DevPracticeHandler extends AbstractHandler {
-	protected static final String NOT_FOUND_MESSAGE = "Path not found.\n\nSend /register?endpoint=... to register";
+	protected static final Response NOT_FOUND = Response.plainText("Path not found.\n\nSend /register?endpoint=... to register");
 	private Map<String, RequestListener> listeners = new HashMap<String, RequestListener>();
 
-	public DevPracticeHandler(RequestListener jsListener,
+	public DevPracticeHandler(RequestListener staticListener,
 							  RequestListener pingListener,
 							  RequestListener registerListener,
 							  RequestListener forceTestListener,
 							  RequestListener scoresListener) {
-		listeners.put("/js/jquery.flot.js", jsListener);
+		listeners.put("/js/jquery.flot.js", staticListener);
+		listeners.put("/index.html", staticListener);
 		listeners.put("/ping", pingListener);
 		listeners.put("/register", registerListener);
 		listeners.put("/forceTest", forceTestListener);
@@ -31,21 +32,21 @@ final class DevPracticeHandler extends AbstractHandler {
 	}
 
 	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse httpResponse) throws IOException, ServletException {
 		RequestListener listener = listeners.get(target);
 		if (listener == null) {
-			sendResponse(HttpServletResponse.SC_NOT_FOUND, baseRequest, response, NOT_FOUND_MESSAGE);
+			sendResponse(HttpServletResponse.SC_NOT_FOUND, baseRequest, httpResponse, NOT_FOUND);
 			return;
 		}			
-		String responseText = listener.request(request);
-		sendResponse(HttpServletResponse.SC_OK, baseRequest, response, responseText);
+		Response response = listener.request(request);
+		sendResponse(HttpServletResponse.SC_OK, baseRequest, httpResponse, response);
 	}
 
-	private void sendResponse(int statusCode, Request baseRequest, HttpServletResponse response, String message) throws IOException {
-		response.setContentType("text/plain");
-		response.setStatus(statusCode);
+	private void sendResponse(int statusCode, Request baseRequest, HttpServletResponse httpResponse, Response response) throws IOException {
+		httpResponse.setContentType(response.getContentType());
+		httpResponse.setStatus(statusCode);
 		baseRequest.setHandled(true);
-		response.getWriter().println(message);
+		httpResponse.getWriter().println(response.getContent());
 	}
 
 	public void registerListener(String path, RequestListener listener) {

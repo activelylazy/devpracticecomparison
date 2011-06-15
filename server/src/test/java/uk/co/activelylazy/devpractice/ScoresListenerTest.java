@@ -34,9 +34,8 @@ public class ScoresListenerTest {
 			oneOf(participant).getEndpoint(); will(returnValue(endpoint));
 		}});
 		
-		String response = listener.request(request);
-
-		assertThat(response, is("{\"groups\":[{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}],\"name\":\"TDD\"}]}"));
+		assertThat(listener.request(request), 
+				ResponseMatcher.json().with_content(is("{\"groups\":[{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}],\"name\":\"TDD\"}]}")));
 		context.assertIsSatisfied();
 	}
 }
