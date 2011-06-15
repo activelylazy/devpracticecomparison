@@ -53,4 +53,12 @@ public class ResponseMatcher extends TypeSafeDiagnosingMatcher<Response> {
 	public static ResponseMatcher json() {
 		return new ResponseMatcher("text/json");
 	}
+
+	public static Matcher<Response> javascript() {
+		return new ResponseMatcher("text/javascript");
+	}
+	
+	public static Matcher<Response> html() {
+		return new ResponseMatcher("text/html");
+	}
 }

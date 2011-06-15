@@ -87,6 +87,58 @@ public class DevPracticeHandlerTest {
 	}
 	
 	@Test public void
+	handler_responds_to_javascript() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		final String contentType = "text/javascript";
+		final String responseText = "// nothing here";
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); 
+			will(returnValue(new Response(contentType, responseText)));
+			oneOf(response).setContentType(contentType);
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println(responseText);
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(listener, null, null, null, null);
+		handler.handle("/js/jquery.flot.js", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+
+	@Test public void
+	handler_responds_to_html() throws IOException, ServletException {
+		final Request baseRequest = context.mock(Request.class);
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final HttpServletResponse response = context.mock(HttpServletResponse.class);
+		final RequestListener listener = context.mock(RequestListener.class);
+		final PrintWriter writer = context.mock(PrintWriter.class);
+		final String contentType = "text/html";
+		final String responseText = "<html><body>Hello world</body></html>";
+		
+		context.checking(new Expectations() {{
+			oneOf(listener).request(request); 
+			will(returnValue(new Response(contentType, responseText)));
+			oneOf(response).setContentType(contentType);
+			oneOf(response).setStatus(HttpServletResponse.SC_OK);
+			oneOf(response).getWriter(); will(returnValue(writer));
+			oneOf(writer).println(responseText);
+			oneOf(baseRequest).setHandled(true);
+		}});
+		
+		DevPracticeHandler handler = new DevPracticeHandler(listener, null, null, null, null);
+		handler.handle("/index.html", baseRequest, request, response);
+		
+		context.assertIsSatisfied();
+	}
+
+	@Test public void
 	handler_responds_to_register() throws IOException, ServletException {
 		final Request baseRequest = context.mock(Request.class);
 		final HttpServletRequest request = context.mock(HttpServletRequest.class);
