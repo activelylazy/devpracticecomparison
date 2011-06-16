@@ -9,6 +9,37 @@
 		<div id="placeholder" style="width:600px;height:400px"></div>
 		
 		<script>
+			function refreshScores() {
+				$.getJSON("/scores.json", updateScores);
+			}
+			function updateScores(results) {
+				if (!results) {
+					alert("No results!");
+					return;
+				}
+
+				$("h1").empty();
+				$("h1").append("Updated "+new Date());
+				$.plot($("#placeholder"),
+						[
+							{
+								data: [[1, getScoreForGroup(results, "TDD")], 
+								       [3, getScoreForGroup(results, "NoTDD")]],
+								bars: {show: true}
+							}
+						],
+						{
+							xaxis: {
+								ticks: [ [0, ""], [1.5, "TDD"], [3.5, "No TDD"]],
+								min: 0,
+								max: 5
+							}
+						}
+					);
+				
+				window.setTimeout("refreshScores()", 1);
+			}
+			
 			function getScoreForGroup(results, groupName) {
 				var score = 0;
 				for (i=0; i<results.clients.length; i++) {
@@ -18,32 +49,8 @@
 				}
 				return score;
 			}
-			
-			var results = {"clients":[
-			                          {"endpoint":"client 1","group":"TDD","score":10},
-			                          {"endpoint":"client 2","group":"NoTDD","score":5},
-			                          {"endpoint":"client 3","group":"TDD","score":15},
-			                          {"endpoint":"client 4","group":"TDD","score":20},
-			                          {"endpoint":"client 5","group":"NoTDD","score":30},
-			                          {"endpoint":"client 6","group":"NoTDD","score":5}
-			              ]};
-			
-			$.plot($("#placeholder"),
-				[
-					{
-						data: [[1, getScoreForGroup(results, "TDD")], 
-						       [3, getScoreForGroup(results, "NoTDD")]],
-						bars: {show: true}
-					}
-				],
-				{
-					xaxis: {
-						ticks: [ [0, ""], [1.5, "TDD"], [3.5, "No TDD"]],
-						min: 0,
-						max: 5
-					}
-				}
-			);
+
+			refreshScores();
 		</script>
 	</body>
 </html>
