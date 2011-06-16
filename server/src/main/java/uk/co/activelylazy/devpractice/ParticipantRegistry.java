@@ -16,9 +16,6 @@ public class ParticipantRegistry {
 	}
 	
 	public void addParticipant(String endpoint, TaskRunner runner) {
-		if (!isValidGroup(runner.getGroupName())) {
-			throw new IllegalArgumentException("Invalid group name: "+runner.getGroupName());
-		}
 		participants.put(endpoint, runner);
 	}
 	

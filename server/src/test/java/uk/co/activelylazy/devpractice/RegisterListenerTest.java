@@ -130,10 +130,23 @@ public class RegisterListenerTest {
 		context.assertIsSatisfied();
 	}
 	
-	@Ignore
 	@Test public void
-	registering_with_invalid_group_gives_useful_error() {
-		fail("Not implemented");
+	registering_with_invalid_group_gives_useful_error() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue("http://endpoint.example.com/"));
+			oneOf(request).getParameter("group"); will(returnValue("not a valid group"));
+			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
+			oneOf(participants).isValidGroup("not a valid group"); will(returnValue(false));
+		}});
+		
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Error - please pass parameter 'group', which should be one of TDD, NoTDD")));
+		context.assertIsSatisfied();
 	}
 	
 	@Ignore
