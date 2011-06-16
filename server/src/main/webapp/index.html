@@ -3,6 +3,20 @@
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		<script src="js/jquery.flot.js" type="text/javascript"></script>
 		<style>
+			#disconnected {
+				display: none;
+				position: absolute;
+				top: 10;
+				left: 10;
+				width: 175;
+				height: 20px;
+				border: 3px solid #CC4444;
+				border-radius: 15px;
+				padding: 10px;
+				background: #FFCCCC;
+				text-align: center;
+				color: #CC4444;
+			}
 			h1 {
 				font-family: Times New Roman;
 				font-size: 20pt;
@@ -13,6 +27,7 @@
 		</style>
 	</head>
 	<body>
+		<div id="disconnected">Disconnected!</div>
 		<h1>Check you can connect to http://192.168.1.1:8989/ping</h1>
 		
 		<div id="placeholder" style="width:600px;height:400px"></div>
@@ -23,9 +38,11 @@
 			}
 			function updateScores(results) {
 				if (!results) {
-					alert("No results!");
+					$("#disconnected").show();
 					return;
 				}
+				
+				$("#disconnected").hide();
 
 				//$("h1").empty();
 				//$("h1").append("Updated "+new Date());
