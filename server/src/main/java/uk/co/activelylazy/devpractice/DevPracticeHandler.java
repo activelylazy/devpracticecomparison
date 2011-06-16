@@ -23,6 +23,7 @@ final class DevPracticeHandler extends AbstractHandler {
 							  RequestListener registerListener,
 							  RequestListener forceTestListener,
 							  RequestListener scoresListener) {
+		listeners.put("/js/jquery.min.js", staticListener);
 		listeners.put("/js/jquery.flot.js", staticListener);
 		listeners.put("/index.html", staticListener);
 		listeners.put("/ping", pingListener);
