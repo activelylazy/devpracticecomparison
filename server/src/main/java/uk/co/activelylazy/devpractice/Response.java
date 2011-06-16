@@ -16,5 +16,9 @@ public class Response {
 	public static Response plainText(String content) {
 		return new Response("text/plain", content);
 	}
-	
+
+	@Override
+	public String toString() {
+		return "a response of type "+contentType+" with content "+content;
+	}
 }

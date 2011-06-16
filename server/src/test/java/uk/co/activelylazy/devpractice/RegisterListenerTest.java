@@ -2,6 +2,7 @@ package uk.co.activelylazy.devpractice;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -33,7 +35,7 @@ public class RegisterListenerTest {
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
-			oneOf(participants).addParticipant(with(endpoint), with(any(TaskRunner.class)), with(groupName));
+			oneOf(participants).addParticipant(with(endpoint), with(any(TaskRunner.class)));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
 			oneOf(client).sendStatus("registered");
@@ -98,5 +100,23 @@ public class RegisterListenerTest {
 		assertThat(listener.request(request), 
 				ResponseMatcher.plain_text().with_content(is("Error - please pass parameter 'group', which should be one of TDD, NoTDD")));
 		context.assertIsSatisfied();
+	}
+	
+	@Ignore
+	@Test public void
+	registering_with_same_endpoint_updates_registration() {
+		fail("Not implemented");
+	}
+	
+	@Ignore
+	@Test public void
+	registering_with_invalid_group_gives_useful_error() {
+		fail("Not implemented");
+	}
+	
+	@Ignore
+	@Test public void
+	updating_registration_with_invalid_group_name_unregisters_client() {
+		fail("Not implemented");
 	}
 }

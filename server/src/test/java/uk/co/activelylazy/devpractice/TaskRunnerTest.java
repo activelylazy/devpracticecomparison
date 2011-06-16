@@ -22,7 +22,7 @@ public class TaskRunnerTest {
 		final DevPracticeClient client = context.mock(DevPracticeClient.class);
 		final DevPracticeTask task = context.mock(DevPracticeTask.class);
 		
-		TaskRunner runner = new TaskRunner(client);
+		TaskRunner runner = new TaskRunner(client, "no group");
 		
 		context.checking(new Expectations() {{
 			allowing(task).executeFor(with(client), with(any(String.class)));
@@ -40,7 +40,7 @@ public class TaskRunnerTest {
 		final DevPracticeClient client = context.mock(DevPracticeClient.class);
 		final DevPracticeTask task = context.mock(DevPracticeTask.class);
 		
-		TaskRunner runner = new TaskRunner(client);
+		TaskRunner runner = new TaskRunner(client, "no group");
 		
 		context.checking(new Expectations() {{
 			allowing(task).executeFor(with(client), with(any(String.class)));

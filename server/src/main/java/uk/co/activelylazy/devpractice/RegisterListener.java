@@ -32,13 +32,13 @@ public class RegisterListener implements RequestListener {
 		}
 		
 		DevPracticeClient client = clientFactory.create(endpoint);
-		TaskRunner runner = new TaskRunner(client);
+		TaskRunner runner = new TaskRunner(client, groupName);
 		try {
 			client.sendStatus("registered");
 		} catch (IOException e){
 			return Response.plainText("Failed to register client: "+e.getMessage());
 		}
-		participants.addParticipant(endpoint, runner, groupName);
+		participants.addParticipant(endpoint, runner);
 		if (request.getParameter("runTests") == null) { 
 			runner.start();
 		}

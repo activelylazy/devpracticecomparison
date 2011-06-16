@@ -22,20 +22,19 @@ public class ScoresListenerTest {
 		final HttpServletRequest request = context.mock(HttpServletRequest.class);
 		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
 		final TaskRunner participant = context.mock(TaskRunner.class);
-		final ParticipantGroup group = context.mock(ParticipantGroup.class);
 		final String endpoint = "http://endpoint.example.com/";
+		final String groupName = "TDD";
 		ScoresListener listener = new ScoresListener(participants);
 		
 		context.checking(new Expectations() {{
-			oneOf(participants).getParticipantGroups(); will(returnValue(Arrays.asList(group)));
-			allowing(group).getParticipants(); will(returnValue(Arrays.asList(participant)));
-			allowing(group).getGroupName(); will(returnValue("TDD"));
+			oneOf(participants).getParticipants(); will(returnValue(Arrays.asList(participant)));
 			oneOf(participant).getScore(); will(returnValue(0));
 			oneOf(participant).getEndpoint(); will(returnValue(endpoint));
+			oneOf(participant).getGroupName(); will(returnValue(groupName));
 		}});
 		
 		assertThat(listener.request(request), 
-				ResponseMatcher.json().with_content(is("{\"groups\":[{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"score\":0}],\"name\":\"TDD\"}]}")));
+				ResponseMatcher.json().with_content(is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"group\":\"TDD\",\"score\":0}]}")));
 		context.assertIsSatisfied();
 	}
 }
