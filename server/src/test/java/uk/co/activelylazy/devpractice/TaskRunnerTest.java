@@ -52,4 +52,5 @@ public class TaskRunnerTest {
 
 		assertThat(runner.getScore(), is(equalTo(initialScore)));
 	}
+	
 }

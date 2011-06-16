@@ -31,10 +31,16 @@ public class RegisterListener implements RequestListener {
 				StringUtils.join(participants.getGroupNames(), ", "));
 		}
 		
-		DevPracticeClient client = clientFactory.create(endpoint);
-		TaskRunner runner = new TaskRunner(client, groupName);
+		TaskRunner runner = participants.getParticipant(endpoint);
+		if (runner == null) {
+			DevPracticeClient client = clientFactory.create(endpoint);
+			runner = new TaskRunner(client, groupName);
+		} else {
+			runner.update(groupName);
+		}
+		
 		try {
-			client.sendStatus("registered");
+			runner.sendStatus("registered");
 		} catch (IOException e){
 			return Response.plainText("Failed to register client: "+e.getMessage());
 		}

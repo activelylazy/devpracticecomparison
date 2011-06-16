@@ -35,6 +35,7 @@ public class RegisterListenerTest {
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
 			oneOf(participants).addParticipant(with(endpoint), with(any(TaskRunner.class)));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
@@ -58,6 +59,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
 			oneOf(client).sendStatus("registered"); will(throwException(new IOException("Cannot connect")));
@@ -102,10 +104,30 @@ public class RegisterListenerTest {
 		context.assertIsSatisfied();
 	}
 	
-	@Ignore
 	@Test public void
-	registering_with_same_endpoint_updates_registration() {
-		fail("Not implemented");
+	registering_with_same_endpoint_updates_registration() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final String endpoint = "http://endpoint.example.com/";
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		final TaskRunner participant = context.mock(TaskRunner.class);
+		final String groupName = "TDD";
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
+			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
+			oneOf(participants).addParticipant(endpoint, participant);
+			oneOf(participant).update(groupName);
+			oneOf(participant).sendStatus("registered");
+			oneOf(participant).start();
+		}});
+		
+		assertThat(listener.request(request), ResponseMatcher.plain_text().with_content(is("OK")));
+		context.assertIsSatisfied();
 	}
 	
 	@Ignore

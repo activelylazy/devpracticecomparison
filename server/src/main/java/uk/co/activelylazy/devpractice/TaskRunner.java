@@ -45,6 +45,10 @@ public class TaskRunner extends Thread {
 		return executeTask(text, tasks.get(iteration));
 	}
 
+	public void update(String groupName) {
+		this.groupName = groupName;
+	}
+
 	boolean executeTask(int text, final DevPracticeTask task) throws ClientProtocolException, IOException {
 		boolean pass = task.executeFor(client,texts[text]);
 		if (pass) {
@@ -83,5 +87,9 @@ public class TaskRunner extends Thread {
 				}
 			}
 		}
+	}
+
+	public void sendStatus(String status) throws IOException {
+		client.sendStatus(status);
 	}
 }

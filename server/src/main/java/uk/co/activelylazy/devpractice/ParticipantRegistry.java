@@ -43,4 +43,5 @@ public class ParticipantRegistry {
 	public List<String> getGroupNames() {
 		return this.groupNames;
 	}
+
 }
