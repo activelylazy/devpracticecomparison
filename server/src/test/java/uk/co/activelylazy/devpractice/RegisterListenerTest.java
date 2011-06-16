@@ -2,7 +2,6 @@ package uk.co.activelylazy.devpractice;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -149,9 +147,29 @@ public class RegisterListenerTest {
 		context.assertIsSatisfied();
 	}
 	
-	@Ignore
 	@Test public void
-	updating_registration_with_invalid_group_name_unregisters_client() {
-		fail("Not implemented");
+	updating_registration_with_invalid_group_name_unregisters_client() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final String endpoint = "http://endpoint.example.com/";
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		final TaskRunner participant = context.mock(TaskRunner.class);
+		final String groupName = "NoTDD";
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
+			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
+			oneOf(participants).addParticipant(endpoint, participant);
+			oneOf(participant).update(groupName);
+			oneOf(participant).sendStatus("registered");
+			oneOf(participant).start();
+		}});
+		
+		assertThat(listener.request(request), ResponseMatcher.plain_text().with_content(is("OK")));
+		context.assertIsSatisfied();
 	}
 }
