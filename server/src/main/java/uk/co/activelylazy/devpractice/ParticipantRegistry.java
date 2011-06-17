@@ -15,23 +15,23 @@ public class ParticipantRegistry {
 		this.groupNames = Arrays.asList(groupNames);
 	}
 	
-	public void addParticipant(String endpoint, TaskRunner runner) {
+	public synchronized void addParticipant(String endpoint, TaskRunner runner) {
 		participants.put(endpoint, runner);
 	}
 	
-	public TaskRunner getParticipant(String endpoint) {
+	public synchronized TaskRunner getParticipant(String endpoint) {
 		return participants.get(endpoint);
 	}
 	
-	public void removeParticipant(String endpoint) {
+	public synchronized void removeParticipant(String endpoint) {
 		participants.remove(endpoint);
 	}
 	
-	public Collection<TaskRunner> getParticipants() {
+	public synchronized Collection<TaskRunner> getParticipants() {
 		return participants.values();
 	}
 	
-	public void close() {
+	public synchronized void close() {
 		for (TaskRunner participant : participants.values()) {
 			participant.close();
 		}
