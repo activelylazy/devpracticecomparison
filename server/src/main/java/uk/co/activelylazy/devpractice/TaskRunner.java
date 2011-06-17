@@ -34,10 +34,12 @@ public class TaskRunner extends Thread {
 	private DevPracticeClient client;
 	private int score;
 	private String groupName;
+	private String clientName;
 
-	public TaskRunner(DevPracticeClient client, String groupName) {
+	public TaskRunner(DevPracticeClient client, String groupName, String clientName) {
 		this.client = client;
 		this.groupName = groupName;
+		this.clientName = clientName;
 		tasks.add(new SayHelloWorldTask());
 		tasks.add(new EchoContentBackTask());
 		tasks.add(new CountWordsTask());
@@ -46,12 +48,14 @@ public class TaskRunner extends Thread {
 	public int getScore() { return this.score; }
 	public String getEndpoint() { return client.getEndpoint(); }
 	public String getGroupName() { return this.groupName; }
+	public String getClientName() { return this.clientName; }
 	public boolean executeTask(int iteration, int text) throws ClientProtocolException, IOException {
 		return executeTask(text, tasks.get(iteration));
 	}
 
-	public void update(String groupName) {
+	public void update(String groupName, String clientName) {
 		this.groupName = groupName;
+		this.clientName = clientName;
 	}
 
 	boolean executeTask(int text, final DevPracticeTask task) throws ClientProtocolException, IOException {

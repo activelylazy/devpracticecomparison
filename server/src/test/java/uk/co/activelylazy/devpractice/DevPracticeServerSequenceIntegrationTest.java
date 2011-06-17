@@ -64,7 +64,7 @@ public class DevPracticeServerSequenceIntegrationTest {
 		try {
 			makeRequest("http://localhost:8989/register"+
 					"?endpoint="+URLEncoder.encode("http://localhost:9000/", "UTF-8")+
-					"&group=TDD");
+					"&group=TDD&name=Sequence%20Client");
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {

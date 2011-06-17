@@ -25,7 +25,7 @@ public class ForceTestListener implements RequestListener {
 			text = Integer.parseInt(request.getParameter("text"));
 		}
 		
-		TaskRunner theClient = participants.getParticipant(client);
+		TaskRunner theClient = participants.getParticipantByEndpoint(client);
 		if (theClient == null) {
 			throw new NullPointerException("No such client "+client);
 		}

@@ -34,7 +34,7 @@ public class ForceTaskListenerTest {
 			oneOf(request).getParameter("client"); will(returnValue(endpoint));
 			oneOf(request).getParameter("iteration"); will(returnValue("0"));
 			oneOf(request).getParameter("text"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(client));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(client));
 			oneOf(client).executeTask(0, 0);
 		}});
 		

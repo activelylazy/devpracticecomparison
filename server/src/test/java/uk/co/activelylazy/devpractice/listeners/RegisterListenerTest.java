@@ -32,13 +32,16 @@ public class RegisterListenerTest {
 		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
 		final DevPracticeClient client = context.mock(DevPracticeClient.class);
 		final String groupName = "TDD";
+		final String clientName = "Test client";
 		RegisterListener listener = new RegisterListener(participants, clientFactory);
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByName(clientName); will(returnValue(null));
 			oneOf(participants).addParticipant(with(endpoint), with(any(TaskRunner.class)));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
@@ -57,13 +60,16 @@ public class RegisterListenerTest {
 		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
 		final DevPracticeClient client = context.mock(DevPracticeClient.class);
 		final String groupName = "none";
+		final String clientName = "Some name";
 		RegisterListener listener = new RegisterListener(participants, clientFactory);
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByName(clientName); will(returnValue(null));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
 			oneOf(client).sendStatus("registered"); will(throwException(new IOException("Cannot connect")));
@@ -84,6 +90,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(null));
 			oneOf(request).getParameter("group"); will(returnValue("some group"));
+			oneOf(request).getParameter("name"); will(returnValue("some name"));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
 		}});
 		
@@ -103,8 +110,9 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(null));
+			oneOf(request).getParameter("name"); will(returnValue("a name"));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
 		}});
 		
@@ -114,23 +122,104 @@ public class RegisterListenerTest {
 	}
 	
 	@Test public void
-	registering_with_same_endpoint_updates_registration() throws IOException {
+	not_providing_name_returns_useful_error() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		final String endpoint = "http://endpoint.example.com/";
+		final String groupName = "TDD";
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("name"); will(returnValue(null));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
+			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
+		}});
+		
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Error - please pass parameter 'name', which should be the name of your client - e.g. your name(s)")));
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	providing_name_already_in_use_returns_useful_error() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		final TaskRunner participant = context.mock(TaskRunner.class);
+		final String endpoint = "http://endpoint.example.com/";
+		final String clientName = "Name to duplicate";
+		final String groupName = "TDD";
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByName(clientName); will(returnValue(participant));
+			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
+		}});
+		
+		assertThat(listener.request(request), 
+				ResponseMatcher.plain_text().with_content(is("Error - that name is already in use, please choose a different one")));
+		context.assertIsSatisfied();
+	}
+	
+	@Test public void
+	registering_with_same_endpoint_same_name_updates_registration() throws IOException {
 		final HttpServletRequest request = context.mock(HttpServletRequest.class);
 		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
 		final String endpoint = "http://endpoint.example.com/";
 		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
 		final TaskRunner participant = context.mock(TaskRunner.class);
 		final String groupName = "TDD";
+		final String clientName = "The client";
 		RegisterListener listener = new RegisterListener(participants, clientFactory);
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(participant));
+			oneOf(participants).getParticipantByName(clientName); will(returnValue(participant));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(participants).addParticipant(endpoint, participant);
-			oneOf(participant).update(groupName);
+			oneOf(participant).update(groupName, clientName);
+			oneOf(participant).sendStatus("registered");
+			oneOf(participant).start();
+		}});
+		
+		assertThat(listener.request(request), ResponseMatcher.plain_text().with_content(is("OK")));
+		context.assertIsSatisfied();
+	}
+
+	@Test public void
+	registering_with_same_endpoint_but_different_name_updates_registration() throws IOException {
+		final HttpServletRequest request = context.mock(HttpServletRequest.class);
+		final ParticipantRegistry participants = context.mock(ParticipantRegistry.class);
+		final String endpoint = "http://endpoint.example.com/";
+		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
+		final TaskRunner participant = context.mock(TaskRunner.class);
+		final String groupName = "TDD";
+		final String clientName = "The client";
+		RegisterListener listener = new RegisterListener(participants, clientFactory);
+		
+		context.checking(new Expectations() {{
+			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
+			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(participant));
+			oneOf(participants).getParticipantByName(clientName); will(returnValue(null));
+			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
+			oneOf(participants).addParticipant(endpoint, participant);
+			oneOf(participant).update(groupName, clientName);
 			oneOf(participant).sendStatus("registered");
 			oneOf(participant).start();
 		}});
@@ -150,8 +239,9 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue("not a valid group"));
+			oneOf(request).getParameter("name"); will(returnValue("your name"));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(null));
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
 			oneOf(participants).isValidGroup("not a valid group"); will(returnValue(false));
 		}});
@@ -169,13 +259,15 @@ public class RegisterListenerTest {
 		final DevPracticeClient.Factory clientFactory = context.mock(DevPracticeClient.Factory.class);
 		final TaskRunner participant = context.mock(TaskRunner.class);
 		final String groupName = "Invalid group";
+		final String clientName = "your client";
 		RegisterListener listener = new RegisterListener(participants, clientFactory);
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("name"); will(returnValue(clientName));
 			oneOf(request).getParameter("runTests"); will(returnValue(null));
-			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
+			oneOf(participants).getParticipantByEndpoint(endpoint); will(returnValue(participant));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(false));
 			oneOf(participants).removeParticipant(endpoint);
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));

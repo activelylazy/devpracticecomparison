@@ -19,8 +19,17 @@ public class ParticipantRegistry {
 		participants.put(endpoint, runner);
 	}
 	
-	public synchronized TaskRunner getParticipant(String endpoint) {
+	public synchronized TaskRunner getParticipantByEndpoint(String endpoint) {
 		return participants.get(endpoint);
+	}
+	
+	public synchronized TaskRunner getParticipantByName(String name) {
+		for (TaskRunner participant : participants.values()) {
+			if (participant.getName().equalsIgnoreCase(name)) {
+				return participant;
+			}
+		}
+		return null;
 	}
 	
 	public synchronized void removeParticipant(String endpoint) {

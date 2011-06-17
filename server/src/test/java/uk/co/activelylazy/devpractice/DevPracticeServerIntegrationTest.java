@@ -149,6 +149,7 @@ public class DevPracticeServerIntegrationTest {
 		String content = makeRequest("http://localhost:8989/register"+
 				"?endpoint=" + URLEncoder.encode(client.getEndpoint(), "UTF-8") +
 				"&group=TDD" +
+				"&name=Test%20Client" +
 				"&runTests=false");
 		return content;
 	}
