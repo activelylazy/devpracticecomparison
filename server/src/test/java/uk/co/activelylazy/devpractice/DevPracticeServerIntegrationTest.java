@@ -134,7 +134,7 @@ public class DevPracticeServerIntegrationTest {
 		after_registering_the_client();
 		
 		String response = makeRequest("http://localhost:8989/scores.json?client="+encodedEndpoint).trim();
-		assertThat(response, is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"group\":\"TDD\",\"score\":0}]}"));
+		assertThat(response, is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"group\":\"TDD\",\"name\":\"Test Client\",\"score\":0}]}"));
 	}
 	
 	private String makeRequest(String url) throws IOException, ClientProtocolException {

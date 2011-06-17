@@ -17,14 +17,17 @@ import com.google.common.collect.Collections2;
 public class ScoresListener implements RequestListener {
 	
 	public static class ClientJSON {
+		private final String name;
 		private final String group;
 		private final int score;
 		private final String endpoint;
 		public ClientJSON(TaskRunner runner) {
+			this.name = runner.getClientName();
 			this.group = runner.getGroupName();
 			this.score = runner.getScore();
 			this.endpoint = runner.getEndpoint();
 		}
+		public String getName() { return name; }
 		public String getGroup() { return group; }
 		public int getScore() { return score; }
 		public String getEndpoint() { return endpoint; }

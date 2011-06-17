@@ -29,6 +29,7 @@ public class ScoresListenerTest {
 		final TaskRunner participant = context.mock(TaskRunner.class);
 		final String endpoint = "http://endpoint.example.com/";
 		final String groupName = "TDD";
+		final String clientName = "Test client";
 		ScoresListener listener = new ScoresListener(participants);
 		
 		context.checking(new Expectations() {{
@@ -36,10 +37,11 @@ public class ScoresListenerTest {
 			oneOf(participant).getScore(); will(returnValue(0));
 			oneOf(participant).getEndpoint(); will(returnValue(endpoint));
 			oneOf(participant).getGroupName(); will(returnValue(groupName));
+			oneOf(participant).getClientName(); will(returnValue(clientName));
 		}});
 		
 		assertThat(listener.request(request), 
-				ResponseMatcher.json().with_content(is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"group\":\"TDD\",\"score\":0}]}")));
+				ResponseMatcher.json().with_content(is("{\"clients\":[{\"endpoint\":\""+endpoint+"\",\"group\":\"TDD\",\"name\":\"Test client\",\"score\":0}]}")));
 		context.assertIsSatisfied();
 	}
 }
