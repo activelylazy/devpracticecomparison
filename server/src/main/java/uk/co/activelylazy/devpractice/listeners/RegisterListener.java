@@ -9,7 +9,6 @@ import uk.co.activelylazy.devpractice.ParticipantRegistry;
 import uk.co.activelylazy.devpractice.RegistrationRequest;
 import uk.co.activelylazy.devpractice.RegistrationService;
 import uk.co.activelylazy.devpractice.Response;
-import uk.co.activelylazy.devpractice.DevPracticeClient.Factory;
 
 public class RegisterListener implements RequestListener {
 
