@@ -7,6 +7,11 @@ import java.util.Random;
 
 import org.apache.http.client.ClientProtocolException;
 
+import uk.co.activelylazy.devpractice.tasks.CountWordsTask;
+import uk.co.activelylazy.devpractice.tasks.DevPracticeTask;
+import uk.co.activelylazy.devpractice.tasks.EchoContentBackTask;
+import uk.co.activelylazy.devpractice.tasks.SayHelloWorldTask;
+
 public class TaskRunner extends Thread {
 	private static long TIME_BETWEEN_RUNS = 1000*10;
 	private static Random random = new Random();

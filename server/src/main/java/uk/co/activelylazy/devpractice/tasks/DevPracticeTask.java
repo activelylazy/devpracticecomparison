@@ -1,8 +1,10 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.tasks;
 
 import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
+
+import uk.co.activelylazy.devpractice.DevPracticeClient;
 
 public interface DevPracticeTask {
 

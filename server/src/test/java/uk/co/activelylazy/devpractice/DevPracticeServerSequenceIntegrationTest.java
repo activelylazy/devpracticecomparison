@@ -20,6 +20,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.activelylazy.devpractice.tasks.CountWordsTask;
+
 public class DevPracticeServerSequenceIntegrationTest {
 
 	private DevPracticeServer server;

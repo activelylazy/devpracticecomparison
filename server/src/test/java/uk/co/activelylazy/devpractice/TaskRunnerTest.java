@@ -13,6 +13,8 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
+import uk.co.activelylazy.devpractice.tasks.DevPracticeTask;
+
 
 public class TaskRunnerTest {
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};

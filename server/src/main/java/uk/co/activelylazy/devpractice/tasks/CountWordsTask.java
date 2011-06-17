@@ -1,8 +1,10 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.tasks;
 
 import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
+
+import uk.co.activelylazy.devpractice.DevPracticeClient;
 
 public class CountWordsTask implements DevPracticeTask {
 
@@ -19,7 +21,7 @@ public class CountWordsTask implements DevPracticeTask {
 		return answer == expected;
 	}
 
-	int countWords(String text) {
+	public int countWords(String text) {
 		int count = 1;
 		if (text.trim().length() == 0) {
 			return 0;

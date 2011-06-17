@@ -13,7 +13,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 
-public class ForceTestListenerTest {
+public class ForceTaskListenerTest {
 
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
 	

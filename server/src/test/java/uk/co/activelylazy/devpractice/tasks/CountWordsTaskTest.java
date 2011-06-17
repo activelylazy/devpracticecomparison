@@ -1,9 +1,11 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.tasks;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
+
+import uk.co.activelylazy.devpractice.tasks.CountWordsTask;
 
 public class CountWordsTaskTest {
 
