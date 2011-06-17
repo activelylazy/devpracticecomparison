@@ -1,4 +1,4 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,6 +11,13 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
+
+import uk.co.activelylazy.devpractice.DevPracticeClient;
+import uk.co.activelylazy.devpractice.ParticipantRegistry;
+import uk.co.activelylazy.devpractice.ResponseMatcher;
+import uk.co.activelylazy.devpractice.TaskRunner;
+import uk.co.activelylazy.devpractice.DevPracticeClient.Factory;
+import uk.co.activelylazy.devpractice.listeners.RegisterListener;
 
 import com.google.common.collect.Lists;
 

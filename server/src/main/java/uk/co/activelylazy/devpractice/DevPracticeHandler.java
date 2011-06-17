@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import uk.co.activelylazy.devpractice.listeners.RequestListener;
+
 final class DevPracticeHandler extends AbstractHandler {
 	protected static final Response NOT_FOUND = Response.notFound("Path not found.\n\nSend /register?endpoint=... to register");
 	private Map<String, RequestListener> listeners = new HashMap<String, RequestListener>();

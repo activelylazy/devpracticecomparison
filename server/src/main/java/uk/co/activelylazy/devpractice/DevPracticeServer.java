@@ -4,6 +4,13 @@ import java.util.Random;
 
 import org.eclipse.jetty.server.Server;
 
+import uk.co.activelylazy.devpractice.listeners.ForceTestListener;
+import uk.co.activelylazy.devpractice.listeners.PingListener;
+import uk.co.activelylazy.devpractice.listeners.RedirectListener;
+import uk.co.activelylazy.devpractice.listeners.RegisterListener;
+import uk.co.activelylazy.devpractice.listeners.ScoresListener;
+import uk.co.activelylazy.devpractice.listeners.StaticResourceListener;
+
 public class DevPracticeServer {
 	private static final String[] GROUP_NAMES = {"TDD", "NoTDD"};
 	

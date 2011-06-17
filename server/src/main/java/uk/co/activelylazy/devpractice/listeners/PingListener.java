@@ -1,6 +1,8 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import javax.servlet.http.HttpServletRequest;
+
+import uk.co.activelylazy.devpractice.Response;
 
 public class PingListener implements RequestListener {
 

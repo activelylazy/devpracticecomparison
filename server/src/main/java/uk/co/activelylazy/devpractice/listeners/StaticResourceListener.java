@@ -1,4 +1,4 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import java.io.File;
 import java.io.FileReader;
@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 
 import javax.servlet.http.HttpServletRequest;
+
+import uk.co.activelylazy.devpractice.Response;
 
 public class StaticResourceListener implements RequestListener {
 

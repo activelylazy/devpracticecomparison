@@ -1,4 +1,4 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -6,6 +6,10 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import uk.co.activelylazy.devpractice.Response;
+import uk.co.activelylazy.devpractice.ResponseMatcher;
+import uk.co.activelylazy.devpractice.listeners.RedirectListener;
 
 
 public class RedirectListenerTest {

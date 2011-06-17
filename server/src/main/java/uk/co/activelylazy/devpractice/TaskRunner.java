@@ -46,7 +46,7 @@ public class TaskRunner extends Thread {
 	public int getScore() { return this.score; }
 	public String getEndpoint() { return client.getEndpoint(); }
 	public String getGroupName() { return this.groupName; }
-	boolean executeTask(int iteration, int text) throws ClientProtocolException, IOException {
+	public boolean executeTask(int iteration, int text) throws ClientProtocolException, IOException {
 		return executeTask(text, tasks.get(iteration));
 	}
 

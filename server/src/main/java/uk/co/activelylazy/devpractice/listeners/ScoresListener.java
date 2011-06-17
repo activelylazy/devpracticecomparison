@@ -1,9 +1,13 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
+
+import uk.co.activelylazy.devpractice.ParticipantRegistry;
+import uk.co.activelylazy.devpractice.Response;
+import uk.co.activelylazy.devpractice.TaskRunner;
 
 import net.sf.json.JSONSerializer;
 

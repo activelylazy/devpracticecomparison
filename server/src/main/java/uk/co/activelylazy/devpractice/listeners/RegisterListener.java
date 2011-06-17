@@ -1,8 +1,15 @@
-package uk.co.activelylazy.devpractice;
+package uk.co.activelylazy.devpractice.listeners;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+
+import uk.co.activelylazy.devpractice.DevPracticeClient;
+import uk.co.activelylazy.devpractice.ParticipantRegistry;
+import uk.co.activelylazy.devpractice.RegistrationRequest;
+import uk.co.activelylazy.devpractice.RegistrationService;
+import uk.co.activelylazy.devpractice.Response;
+import uk.co.activelylazy.devpractice.DevPracticeClient.Factory;
 
 public class RegisterListener implements RequestListener {
 
