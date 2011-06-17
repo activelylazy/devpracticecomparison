@@ -57,6 +57,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(true));
 			oneOf(clientFactory).create(endpoint); will(returnValue(client));
@@ -77,6 +78,8 @@ public class RegisterListenerTest {
 		
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(null));
+			oneOf(request).getParameter("group"); will(returnValue("some group"));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
 		}});
 		
 		assertThat(listener.request(request), 
@@ -95,6 +98,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(null));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
 		}});
@@ -141,6 +145,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue("not a valid group"));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(participants).getParticipant(endpoint); will(returnValue(null));
 			oneOf(participants).getGroupNames(); will(returnValue(Lists.newArrayList("TDD", "NoTDD")));
 			oneOf(participants).isValidGroup("not a valid group"); will(returnValue(false));
@@ -164,6 +169,7 @@ public class RegisterListenerTest {
 		context.checking(new Expectations() {{
 			oneOf(request).getParameter("endpoint"); will(returnValue(endpoint));
 			oneOf(request).getParameter("group"); will(returnValue(groupName));
+			oneOf(request).getParameter("runTests"); will(returnValue(null));
 			oneOf(participants).getParticipant(endpoint); will(returnValue(participant));
 			oneOf(participants).isValidGroup(groupName); will(returnValue(false));
 			oneOf(participants).removeParticipant(endpoint);
