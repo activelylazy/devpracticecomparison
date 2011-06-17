@@ -23,6 +23,10 @@ public class ParticipantRegistry {
 		return participants.get(endpoint);
 	}
 	
+	public void removeParticipant(String endpoint) {
+		participants.remove(endpoint);
+	}
+	
 	public Collection<TaskRunner> getParticipants() {
 		return participants.values();
 	}

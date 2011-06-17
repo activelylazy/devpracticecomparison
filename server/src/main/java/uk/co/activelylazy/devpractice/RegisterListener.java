@@ -25,13 +25,17 @@ public class RegisterListener implements RequestListener {
 		if (endpoint == null || "".equals(endpoint)) {
 			return Response.plainText("Error - please pass parameter 'endpoint', which should be a http://.../ URL");
 		}
+		TaskRunner runner = participants.getParticipant(endpoint);
 		String groupName = request.getParameter("group");
 		if (groupName == null || !participants.isValidGroup(groupName)) {
+			if (runner != null) {
+				runner.close();
+				participants.removeParticipant(endpoint);
+			}
 			return Response.plainText("Error - please pass parameter 'group', which should be one of " + 
 				StringUtils.join(participants.getGroupNames(), ", "));
 		}
 		
-		TaskRunner runner = participants.getParticipant(endpoint);
 		if (runner == null) {
 			DevPracticeClient client = clientFactory.create(endpoint);
 			runner = new TaskRunner(client, groupName);
