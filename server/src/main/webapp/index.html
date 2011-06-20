@@ -24,13 +24,23 @@
 				text-align: center;
 				padding-top: 8px;				
 			}
+			
+			#table {
+				float: left;
+				width: 400px;
+				height: 370px;
+				border: 2px solid #444444;
+				border-radius: 5px;
+				margin: 5px;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="disconnected">Disconnected!</div>
 		<h1>Check you can connect to http://192.168.1.1:8989/ping</h1>
 		
-		<div id="placeholder" style="width:600px;height:400px"></div>
+		<div id="placeholder" style="float: left;width:600px;height:400px"></div>
+		<div id="table"></div>
 		
 		<script>
 			function refreshScores() {
@@ -43,9 +53,27 @@
 				}
 				
 				$("#disconnected").hide();
-
-				//$("h1").empty();
-				//$("h1").append("Updated "+new Date());
+			
+				updateGraph(results);
+				updateTable(results);
+				window.setTimeout("refreshScores()", 1);
+			}
+			
+			function updateTable(results) {
+				$("#table").empty();
+				var table = $('<table width="100%"/>');
+				for (i=0; i<results.clients.length; i++) {
+					table.append($("<tr/>")
+							.append($("<td>")
+									.withAttribute("style","foo")
+									.append(results.clients[i].name)
+							)
+					);
+				}
+				$("#table").append(table);
+			}
+			
+			function updateGraph(results) {
 				$.plot($("#placeholder"),
 						[
 							{
@@ -62,8 +90,6 @@
 							}
 						}
 					);
-				
-				window.setTimeout("refreshScores()", 1);
 			}
 			
 			function getScoreForGroup(results, groupName) {
