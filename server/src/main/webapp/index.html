@@ -33,6 +33,25 @@
 				border-radius: 5px;
 				margin: 5px;
 			}
+			
+			td.row-0 {
+				background: #DDDDDD;
+				font-family: Arial;
+				font-size: 12pt;
+				color: #444444;
+				padding: 2px;
+			}
+			td.row-1 {
+				background: #CCCCCC;
+				font-family: Arial;
+				font-size: 12pt;
+				color: #444444;
+				padding: 2px;
+			}
+			td.score {
+				text-align: right;
+				padding-right: 6px;
+			}
 		</style>
 	</head>
 	<body>
@@ -65,8 +84,12 @@
 				for (i=0; i<results.clients.length; i++) {
 					table.append($("<tr/>")
 							.append($("<td>")
-									.withAttribute("style","foo")
+									.attr("class","row-"+(i%2))
 									.append(results.clients[i].name)
+							)
+							.append($("<td>")
+									.attr("class","score row-"+(i%2))
+									.append(results.clients[i].score)
 							)
 					);
 				}
